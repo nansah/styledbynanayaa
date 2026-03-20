@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop My Faves | Styled by Nana Yaa Ansah</title>
+  <meta name="description" content="Shop Nana Yaa's curated favorites — fashion, beauty, home, and lifestyle affiliate picks, hand-selected for the discerning New York woman." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="page.css" />
+  <link rel="stylesheet" href="shop.css" />
+</head>
+<body>
+
+  <!-- ── NAV ───────────────────────────────────────────────────────── -->
+  <header class="site-header site-header--dark-hero" id="site-header">
+    <nav class="nav-container">
+      <div class="nav-left">
+        <a href="/#fashion" class="nav-link">Fashion</a>
+        <a href="/#faith" class="nav-link">Faith</a>
+        <a href="/#lifestyle" class="nav-link">Lifestyle</a>
+      </div>
+      <a href="/" class="nav-logo">
+        <span class="logo-main">NANA YAA</span>
+        <span class="logo-sub">ANSAH</span>
+      </a>
+      <div class="nav-right">
+        <a href="/shop" class="nav-link">My Faves</a>
+        <a href="/blog" class="nav-link">Blog</a>
+        <a href="/ebook" class="nav-link">Ebook</a>
+        <a href="/press" class="nav-link">Press</a>
+        <a href="/about" class="nav-link">About</a>
+      </div>
+      <button class="nav-burger" id="nav-burger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+    <div class="mobile-menu" id="mobile-menu">
+      <a href="/#fashion" class="mobile-link">Fashion</a>
+      <a href="/#faith" class="mobile-link">Faith</a>
+      <a href="/#lifestyle" class="mobile-link">Lifestyle</a>
+      <a href="/shop" class="mobile-link">My Faves</a>
+      <a href="/blog" class="mobile-link">Blog</a>
+      <a href="/press" class="mobile-link">Press</a>
+      <a href="/ebook" class="mobile-link">Ebook</a>
+      <a href="/about" class="mobile-link">About</a>
+    </div>
+  </header>
+
+  <!-- ── PAGE HERO ─────────────────────────────────────────────────── -->
+  <section class="page-hero">
+    <div class="page-hero-bg page-hero-bg--mahogany">
+      <div class="page-hero-decor-ring"></div>
+      <div class="page-hero-decor-ring page-hero-decor-ring--sm"></div>
+    </div>
+    <div class="page-hero-content">
+      <span class="section-eyebrow" style="color: var(--gold-light);">[ Affiliate Picks ]</span>
+      <h1 class="page-hero-title">Shop My <em>Faves</em></h1>
+      <p class="page-hero-sub">Everything I love, use, and actually wear — curated just for you.</p>
+    </div>
+  </section>
+
+  <!-- ── AFFILIATE DISCLOSURE ───────────────────────────────────────── -->
+  <div class="affiliate-disclosure">
+    <p>✦ &nbsp;Some links on this page are affiliate links. I earn a small commission when you shop through them — at no extra cost to you. I only share things I genuinely love.</p>
+  </div>
+
+  <!-- ── FILTER TABS ────────────────────────────────────────────────── -->
+  <section class="shop-section">
+    <div class="shop-filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="fashion">Fashion</button>
+      <button class="filter-btn" data-filter="beauty">Beauty</button>
+      <button class="filter-btn" data-filter="home">Home</button>
+      <button class="filter-btn" data-filter="wellness">Wellness</button>
+      <button class="filter-btn" data-filter="faith">Faith &amp; Books</button>
+    </div>
+
+    <div class="shop-grid" id="shop-grid">
+
+      <!-- FASHION -->
+      <article class="shop-card" data-category="fashion">
+        <a href="#" target="_blank" rel="noopener sponsored" class="shop-card-image" style="background: linear-gradient(135deg, #f0e4d8 0%, #d4b898 100%);">
+          <span class="shop-card-cat">Fashion</span>
+        </a>
+        <div class="shop-card-body">
+          <span class="shop-card-brand">Totême</span>
+          <h3 class="shop-card-name">Relaxed Blazer in Camel</h3>
+          <p class="shop-card-desc">My most-worn blazer. Perfect for the NYC office and elevated enough for dinner. The fit is extraordinary.</p>
+          <div class="shop-card-footer">
+            <span class="shop-card-price">$595</span>
+            <a href="#" target="_blank" rel="noopener sponsored" class="shop-card-link">Shop Now ↗</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="shop-card" data-category="fashion">
+        <a href="#" target="_blank" rel="noopener sponsored" class="shop-card-image" style="background: linear-gradient(135deg, #e8e0d4 0%, #c8b89a 100%);">
+          <span class="shop-card-cat">Fashion</span>
+        </a>
+        <div class="shop-card-body">
+          <span class="shop-card-brand">A.P.C.</span>
+          <h3 class="shop-card-name">Sac Half Moon Bag in Caramel</h3>
+          <p class="shop-card-desc">The bag I reach for constantly. Structured, timeless, and goes with everything in my wardrobe.</p>
+          <div class="shop-card-footer">
+            <span class="shop-card-price">$550</span>
+            <a href="#" target="_blank" rel="noopener sponsored" class="shop-card-link">Shop Now ↗</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="shop-card" data-category="fashion">
+        <a href="#" target="_blank" rel="noopener sponsored" class="shop-card-image" style="background: linear-gradient(135deg, #f5ece0 0%, #e0ccb0 100%);">
+          <span class="shop-card-cat">Fashion</span>
+        </a>
+        <div class="shop-card-body">
+          <span class="shop-card-brand">Mango</span>
+          <h3 class="shop-card-name">Wide-Leg Tailored Trousers</h3>
+          <p class="shop-card-desc">The budget-friendly alternative to designer trousers that actually look expensive. I own them in three colors.</p>
+          <div class="shop-card-footer">
+            <span class="shop-card-price">$89</span>
+            <a href="#" target="_blank" rel="noopener sponsored" class="shop-card-link">Shop Now ↗</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="shop-card" data-category="fashion">
+        <a href="#" target="_blank" rel="noopener sponsored" class="shop-card-image" style="background: linear-gradient(135deg, #ede8e0 0%, #c8b8a0 100%);">
+          <span class="shop-card-cat">Fashion</span>
+          <span class="shop-card-fave">NYA Fave</span>
+        </a>
+        <div class="shop-card-body">
+          <span class="shop-card-brand">Loeffler Randall</span>
+          <h3 class="shop-card-name">Platform Loafer in Ivory</h3>
+          <p class="shop-card-desc">Elevated the look of literally every outfit. I've worn these to Fashion Week, Sunday brunch, and board meetings.</p>
+          <div class="shop-card-footer">
+            <span class="shop-card-price">$395</span>
+            <a href="#" target="_blank" rel="noopener sponsored" class="shop-card-link">Shop Now ↗</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- BEAUTY -->
+      <article class="shop-card" data-category="beauty">
+        <a href="#" target="_blank" rel="noopener sponsored" class="shop-card-image" style="background: linear-gradient(135deg, #f5e8ee 0%, #e8c8d8 100%);">
+          <span class="shop-card-cat">Beauty</span>
+          <span class="shop-card-fave">NYA Fave</span>
+        </a>
+        <div class="shop-card-body">
+          <span class="shop-card-brand">Charlotte Tilbury</span>
+          <h3 class="shop-card-name">Magic Cream Moisturizer</h3>
+          <p class="shop-card-desc">My skin has never looked better. This is the moisturizer I recommend to literally every woman I meet.</p>
+          <div class="shop-card-footer">
+            <span class="shop-card-price">$105</span>
+            <a href="#" target="_blank" rel="noopener sponsored" class="shop-card-link">Shop Now ↗</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="shop-card" data-category="beauty">
+        <a href="#" target="_blank" rel="noopener sponsored" class="shop-card-image" style="background: linear-gradient(135deg, #fdf0e0 0%, #f0d8b8 100%);">
+          <span class="shop-card-cat">Beauty</span>
+        </a>
+        <div class="shop-card-body">
+          <span class="shop-card-brand">NARS</span>
+          <h3 class="shop-card-name">Sheer Glow Foundation</h3>
+          <p class="shop-card-desc">Looks like skin, not makeup. The perfect base for a polished, natural look that holds all day in the city heat.</p>
+          <div class="shop-card-footer">
+            <span class="shop-card-price">$47</span>
+            <a href="#" target="_blank" rel="noopener sponsored" class="shop-card-link">Shop Now ↗</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- HOME -->
+      <article class="shop-card" data-category="home">
+        <a href="#" target="_blank" rel="noopener sponsored" class="shop-card-image" style="background: linear-gradient(135deg, #e8f0f5 0%, #c8d8e8 100%);">
+          <span class="shop-card-cat">Home</span>
+        </a>
+        <div class="shop-card-body">
+          <span class="shop-card-brand">Aesop</span>
+          <h3 class="shop-card-name">Aromatique Room Spray</h3>
+          <p class="shop-card-desc">My apartment smells like this and I receive compliments every time anyone walks in. A luxury non-negotiable.</p>
+          <div class="shop-card-footer">
+            <span class="shop-card-price">$62</span>
+            <a href="#" target="_blank" rel="noopener sponsored" class="shop-card-link">Shop Now ↗</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="shop-card" data-category="home">
+        <a href="#" target="_blank" rel="noopener sponsored" class="shop-card-image" style="background: linear-gradient(135deg, #f0f5e8 0%, #d8e8c8 100%);">
+          <span class="shop-card-cat">Home</span>
+        </a>
+        <div class="shop-card-body">
+          <span class="shop-card-brand">Parachute</span>
+          <h3 class="shop-card-name">Linen Sheet Set in Warm White</h3>
+          <p class="shop-card-desc">The most beautiful bed you'll ever sleep in. Worth every penny — these last forever and get softer with every wash.</p>
+          <div class="shop-card-footer">
+            <span class="shop-card-price">$219</span>
+            <a href="#" target="_blank" rel="noopener sponsored" class="shop-card-link">Shop Now ↗</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- WELLNESS -->
+      <article class="shop-card" data-category="wellness">
+        <a href="#" target="_blank" rel="noopener sponsored" class="shop-card-image" style="background: linear-gradient(135deg, #eae0f0 0%, #c8b0d0 100%);">
+          <span class="shop-card-cat">Wellness</span>
+          <span class="shop-card-fave">NYA Fave</span>
+        </a>
+        <div class="shop-card-body">
+          <span class="shop-card-brand">Lululemon</span>
+          <h3 class="shop-card-name">Align Leggings in Bone</h3>
+          <p class="shop-card-desc">I have five pairs. They're worth it. The only leggings I feel polished in outside the gym.</p>
+          <div class="shop-card-footer">
+            <span class="shop-card-price">$118</span>
+            <a href="#" target="_blank" rel="noopener sponsored" class="shop-card-link">Shop Now ↗</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- FAITH -->
+      <article class="shop-card" data-category="faith">
+        <a href="#" target="_blank" rel="noopener sponsored" class="shop-card-image" style="background: linear-gradient(135deg, #f0e8d8 0%, #dcc8a8 100%);">
+          <span class="shop-card-cat">Faith &amp; Books</span>
+          <span class="shop-card-fave">NYA Fave</span>
+        </a>
+        <div class="shop-card-body">
+          <span class="shop-card-brand">Artifact Uprising</span>
+          <h3 class="shop-card-name">Devotional Journal — Linen Cover</h3>
+          <p class="shop-card-desc">My morning quiet time starts here. Beautiful enough to display, substantive enough to transform. A daily essential.</p>
+          <div class="shop-card-footer">
+            <span class="shop-card-price">$48</span>
+            <a href="#" target="_blank" rel="noopener sponsored" class="shop-card-link">Shop Now ↗</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="shop-card" data-category="faith">
+        <a href="#" target="_blank" rel="noopener sponsored" class="shop-card-image" style="background: linear-gradient(135deg, #f8f0e4 0%, #e4d0b8 100%);">
+          <span class="shop-card-cat">Faith &amp; Books</span>
+        </a>
+        <div class="shop-card-body">
+          <span class="shop-card-brand">Book Recommendation</span>
+          <h3 class="shop-card-name"><em>Uninvited</em> by Lysa TerKeurst</h3>
+          <p class="shop-card-desc">This book found me at exactly the right time. If you've ever felt rejected, overlooked, or not enough — read this.</p>
+          <div class="shop-card-footer">
+            <span class="shop-card-price">$17</span>
+            <a href="#" target="_blank" rel="noopener sponsored" class="shop-card-link">Shop Now ↗</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="shop-card" data-category="fashion">
+        <a href="#" target="_blank" rel="noopener sponsored" class="shop-card-image" style="background: linear-gradient(135deg, #e8ddd0 0%, #c8b4a0 100%);">
+          <span class="shop-card-cat">Fashion</span>
+        </a>
+        <div class="shop-card-body">
+          <span class="shop-card-brand">Reformation</span>
+          <h3 class="shop-card-name">Midi Slip Dress in Champagne</h3>
+          <p class="shop-card-desc">The dress that does everything. Church, date night, gallery openings, and everything in between.</p>
+          <div class="shop-card-footer">
+            <span class="shop-card-price">$278</span>
+            <a href="#" target="_blank" rel="noopener sponsored" class="shop-card-link">Shop Now ↗</a>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ── EBOOK PROMO ────────────────────────────────────────────────── -->
+  <section class="shop-ebook-promo">
+    <div class="shop-ebook-inner">
+      <div class="shop-ebook-text">
+        <span class="section-eyebrow" style="color: var(--gold);">[ Also Available ]</span>
+        <h2>The Ultimate Guide to Creating a <em>Killer Personal Style</em></h2>
+        <p>Learn the principles behind every pick on this page — and how to build a wardrobe that works as hard as you do.</p>
+        <a href="/ebook" class="btn-primary">Get the eBook — $19.99</a>
+      </div>
+      <div class="shop-ebook-cover">
+        <div class="ebook-mini-cover">
+          <span>NYA</span>
+          <em>Style Guide</em>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ─────────────────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="logo-main">NANA YAA</span>
+        <span class="logo-sub">ANSAH</span>
+        <p class="footer-tagline">Fashion &nbsp;·&nbsp; Faith &nbsp;·&nbsp; Lifestyle</p>
+        <p class="footer-location">New York City</p>
+      </div>
+      <div class="footer-nav">
+        <div class="footer-col">
+          <h4 class="footer-col-title">Navigate</h4>
+          <a href="/#worlds" class="footer-link">Fashion</a>
+          <a href="/#worlds" class="footer-link">Faith</a>
+          <a href="/#worlds" class="footer-link">Lifestyle</a>
+          <a href="/about" class="footer-link">About</a>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-col-title">Resources</h4>
+          <a href="/ebook" class="footer-link">Style Guide (eBook)</a>
+          <a href="/shop" class="footer-link">Shop My Faves</a>
+          <a href="/media-kit" class="footer-link">Media Kit</a>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-col-title">Work With Me</h4>
+          <a href="/collaborations" class="footer-link">Collaborations</a>
+          <a href="/press" class="footer-link">Press Inquiries</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Nana Yaa Ansah · Styled by Nana Yaa · All rights reserved.</p>
+      <div class="footer-bottom-links">
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/terms">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+  <script>
+    // Filter tabs
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const shopCards = document.querySelectorAll('.shop-card');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+        shopCards.forEach(card => {
+          const match = filter === 'all' || card.dataset.category === filter;
+          card.style.display = match ? 'flex' : 'none';
+        });
+      });
+    });
+  </script>
+</body>
+</html>

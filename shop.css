@@ -1,0 +1,273 @@
+/* ═══════════════════════════════════════════════════════════════════
+   STYLED BY NANA YAA — SHOP PAGE STYLES
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── AFFILIATE DISCLOSURE ────────────────────────────────────────── */
+.affiliate-disclosure {
+  background: var(--gold-tint);
+  border-bottom: 1px solid rgba(196,149,90,0.2);
+  padding: 0.9rem var(--gutter);
+  text-align: center;
+}
+.affiliate-disclosure p {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--warm-gray);
+  line-height: 1.5;
+}
+
+/* ── SHOP SECTION ────────────────────────────────────────────────── */
+.shop-section {
+  padding: 4rem var(--gutter) 5rem;
+  background: var(--off-white);
+  max-width: var(--max-w);
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Outer wrapper so background spans full width */
+.shop-section {
+  max-width: none;
+}
+.shop-section > *:not(.shop-filters) {
+  max-width: var(--max-w);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── FILTER TABS ─────────────────────────────────────────────────── */
+.shop-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  padding: 0 var(--gutter) 3rem;
+  max-width: var(--max-w);
+  margin: 0 auto;
+}
+.filter-btn {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0.55rem 1.5rem;
+  border: 1px solid rgba(196,149,90,0.3);
+  background: transparent;
+  color: var(--warm-gray);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.filter-btn:hover {
+  border-color: var(--gold);
+  color: var(--charcoal);
+}
+.filter-btn.active {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--white);
+}
+
+/* ── PRODUCT GRID ────────────────────────────────────────────────── */
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  max-width: var(--max-w);
+  margin: 0 auto;
+}
+
+/* ── PRODUCT CARD ────────────────────────────────────────────────── */
+.shop-card {
+  background: var(--white);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.shop-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(44,40,37,0.1);
+  z-index: 2;
+  position: relative;
+}
+
+/* Image area */
+.shop-card-image {
+  display: block;
+  aspect-ratio: 1/1;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+}
+.shop-card-image:hover {
+  opacity: 0.92;
+}
+.shop-card-cat {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 0.75rem;
+  font-size: 0.58rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  background: rgba(255,255,255,0.85);
+  color: var(--charcoal);
+  padding: 0.3rem 0.6rem;
+  backdrop-filter: blur(4px);
+}
+.shop-card-fave {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: var(--gold);
+  color: var(--white);
+  padding: 0.3rem 0.65rem;
+}
+
+/* Card body */
+.shop-card-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 0.4rem;
+}
+.shop-card-brand {
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+}
+.shop-card-name {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 400;
+  color: var(--charcoal);
+  line-height: 1.3;
+}
+.shop-card-desc {
+  font-size: 0.8rem;
+  color: var(--warm-gray);
+  line-height: 1.7;
+  flex: 1;
+  margin-top: 0.2rem;
+}
+.shop-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--cream);
+}
+.shop-card-price {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 300;
+  color: var(--charcoal);
+}
+.shop-card-link {
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(196,149,90,0.4);
+  padding-bottom: 1px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.shop-card-link:hover {
+  color: var(--mahogany);
+  border-color: var(--mahogany);
+}
+
+/* ── EBOOK PROMO STRIP ───────────────────────────────────────────── */
+.shop-ebook-promo {
+  background: linear-gradient(135deg, var(--mahogany) 0%, var(--mahogany-deep) 100%);
+  padding: 5rem var(--gutter);
+}
+.shop-ebook-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4rem;
+  align-items: center;
+}
+.shop-ebook-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.shop-ebook-text h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 300;
+  color: var(--off-white);
+  line-height: 1.2;
+}
+.shop-ebook-text h2 em {
+  font-style: italic;
+  color: var(--gold-light);
+}
+.shop-ebook-text p {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.8;
+  max-width: 480px;
+}
+
+/* Mini book cover decoration */
+.shop-ebook-cover {
+  flex-shrink: 0;
+}
+.ebook-mini-cover {
+  width: 120px;
+  aspect-ratio: 3/4;
+  background: linear-gradient(160deg, rgba(196,149,90,0.3) 0%, rgba(196,149,90,0.1) 100%);
+  border: 1px solid rgba(196,149,90,0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transform: rotateY(-8deg) rotateX(2deg);
+  box-shadow:
+    -6px 0 0 rgba(30,10,6,0.3),
+    0 12px 30px rgba(30,10,6,0.25);
+}
+.ebook-mini-cover span {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-weight: 300;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.1em;
+}
+.ebook-mini-cover em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.65rem;
+  color: var(--gold-light);
+  text-align: center;
+  padding: 0 0.5rem;
+  line-height: 1.4;
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .shop-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 800px) {
+  .shop-grid { grid-template-columns: repeat(2, 1fr); }
+  .shop-ebook-inner { grid-template-columns: 1fr; text-align: center; }
+  .shop-ebook-cover { display: none; }
+  .shop-ebook-text { align-items: center; }
+  .shop-ebook-text p { text-align: center; }
+}
+@media (max-width: 500px) {
+  .shop-grid { grid-template-columns: 1fr; }
+  .shop-filters { gap: 0.4rem; }
+  .filter-btn { font-size: 0.65rem; padding: 0.5rem 1rem; }
+}

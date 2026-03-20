@@ -1,0 +1,10 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/blog-fashion",   "destination": "/blog/fashion",   "permanent": true },
+    { "source": "/blog-faith",     "destination": "/blog/faith",     "permanent": true },
+    { "source": "/blog-lifestyle", "destination": "/blog/lifestyle", "permanent": true },
+    { "source": "/blog-post",      "destination": "/blog/post",      "permanent": true }
+  ]
+}

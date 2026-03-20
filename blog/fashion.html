@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fashion — Styled by Nana Yaa Ansah</title>
+  <meta name="description" content="Fashion tips, outfit inspiration, and style guides from New York City fashion influencer Nana Yaa Ansah." />
+  <meta property="og:title" content="Fashion — Styled by Nana Yaa Ansah" />
+  <meta property="og:description" content="Fashion tips, outfit inspiration, and style guides from New York City fashion influencer Nana Yaa Ansah." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="../page.css" />
+  <link rel="stylesheet" href="../blog.css" />
+</head>
+<body>
+
+  <!-- ── Navigation ─────────────────────────────────────── -->
+  <header class="site-header" id="site-header">
+    <nav class="nav-container">
+      <div class="nav-left">
+        <a href="/#fashion" class="nav-link">Fashion</a>
+        <a href="/#faith" class="nav-link">Faith</a>
+        <a href="/#lifestyle" class="nav-link">Lifestyle</a>
+      </div>
+      <a href="/" class="nav-logo">
+        <span class="logo-main">NANA YAA</span>
+        <span class="logo-sub">ANSAH</span>
+      </a>
+      <div class="nav-right">
+        <a href="/shop" class="nav-link">My Faves</a>
+        <a href="/ebook" class="nav-link">Ebook</a>
+        <a href="/press" class="nav-link">Press</a>
+        <a href="/about" class="nav-link">About</a>
+      </div>
+      <button class="nav-burger" id="nav-burger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+    <div class="mobile-menu" id="mobile-menu">
+      <a href="/#fashion" class="mobile-link">Fashion</a>
+      <a href="/#faith" class="mobile-link">Faith</a>
+      <a href="/#lifestyle" class="mobile-link">Lifestyle</a>
+      <a href="/shop" class="mobile-link">My Faves</a>
+      <a href="/ebook" class="mobile-link">Ebook</a>
+      <a href="/press" class="mobile-link">Press</a>
+      <a href="/about" class="mobile-link">About</a>
+    </div>
+  </header>
+
+  <!-- ── Category Hero ─────────────────────────────────── -->
+  <section class="blog-category-hero">
+    <div class="blog-hero-inner">
+      <span class="blog-hero-eyebrow">[ Fashion ]</span>
+      <h1 class="blog-hero-title">Fashion</h1>
+      <p class="blog-hero-desc">Outfit formulas, wardrobe building, and style that speaks before you do.</p>
+    </div>
+  </section>
+
+  <!-- ── Section Ornament ──────────────────────────────── -->
+  <div class="section-ornament" aria-hidden="true">
+    <span class="ornament-line"></span>
+    <span class="ornament-diamond"></span>
+    <span class="ornament-line"></span>
+  </div>
+
+  <!-- ── Post Grid ──────────────────────────────────────── -->
+  <section class="blog-grid-section">
+    <div class="blog-grid" id="post-grid"></div>
+  </section>
+
+  <!-- ── Footer ─────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="logo-main">NANA YAA</span>
+        <span class="logo-sub">ANSAH</span>
+        <p class="footer-tagline">Fashion &nbsp;·&nbsp; Faith &nbsp;·&nbsp; Lifestyle</p>
+        <p class="footer-location">New York City</p>
+      </div>
+      <div class="footer-nav">
+        <div class="footer-col">
+          <h4 class="footer-col-title">Navigate</h4>
+          <a href="/#worlds" class="footer-link">Fashion</a>
+          <a href="/#worlds" class="footer-link">Faith</a>
+          <a href="/#worlds" class="footer-link">Lifestyle</a>
+          <a href="/about" class="footer-link">About</a>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-col-title">Resources</h4>
+          <a href="/ebook" class="footer-link">Style Guide (eBook)</a>
+          <a href="/shop" class="footer-link">Shop My Faves</a>
+          <a href="/media-kit" class="footer-link">Media Kit</a>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-col-title">Work With Me</h4>
+          <a href="/collaborations" class="footer-link">Collaborations</a>
+          <a href="/press" class="footer-link">Press Inquiries</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Nana Yaa Ansah · Styled by Nana Yaa · All rights reserved.</p>
+      <div class="footer-bottom-links">
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/terms">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../config.js"></script>
+  <script src="blog.js"></script>
+  <script src="../main.js"></script>
+  <script>
+    (async function () {
+      var grid = document.getElementById('post-grid');
+      grid.innerHTML = '<p class="blog-empty" style="opacity:0.5">Loading...</p>';
+      try {
+        var posts = await BlogCMS.getPublished('fashion');
+        if (!posts.length) {
+          grid.innerHTML = '<p class="blog-empty">No fashion posts yet — check back soon.</p>';
+          return;
+        }
+        grid.innerHTML = '';
+        posts.forEach(function (post) {
+          var imgStyle = post.coverImage
+            ? 'background-image:url(' + post.coverImage + ');'
+            : '';
+          var card = document.createElement('article');
+          card.className = 'post-card';
+          card.innerHTML =
+            '<a href="/blog/post?slug=' + encodeURIComponent(post.slug) + '" class="post-card-img" aria-label="' + post.title + '" style="' + imgStyle + '"></a>' +
+            '<div class="post-card-body">' +
+              '<span class="post-card-category">' + post.category + '</span>' +
+              '<h2 class="post-card-title"><a href="/blog/post?slug=' + encodeURIComponent(post.slug) + '">' + post.title + '</a></h2>' +
+              '<p class="post-card-excerpt">' + post.excerpt + '</p>' +
+              '<p class="post-card-meta">' + BlogCMS.formatDate(post.publishedAt) + '</p>' +
+              '<a href="/blog/post?slug=' + encodeURIComponent(post.slug) + '" class="post-card-read">Read More →</a>' +
+            '</div>';
+          grid.appendChild(card);
+        });
+      } catch (err) {
+        grid.innerHTML = '<p class="blog-empty">Could not load posts. Please try again.</p>';
+        console.error(err);
+      }
+    })();
+  </script>
+
+</body>
+</html>

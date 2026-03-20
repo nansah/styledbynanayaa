@@ -1,0 +1,14 @@
+# Netlify redirects
+
+# Old blog-* root URLs → new /blog/* paths
+/blog-fashion       /blog/fashion   301!
+/blog-faith         /blog/faith     301!
+/blog-lifestyle     /blog/lifestyle 301!
+/blog-post          /blog/post      301!
+/blog-fashion.html  /blog/fashion   301!
+/blog-faith.html    /blog/faith     301!
+/blog-lifestyle.html /blog/lifestyle 301!
+/blog-post.html     /blog/post      301!
+
+# Strip .html from all root pages
+/*.html  /:splat  301!

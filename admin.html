@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Styled by Nana Yaa Ansah</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <!-- CSS variables only — no page.css -->
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body class="admin-body">
+
+<!-- ════════════════════════════════════════════════════════
+     LOGIN SCREEN
+     ════════════════════════════════════════════════════════ -->
+<div class="admin-login" id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Nana Yaa Ansah</div>
+    <p class="login-heading">Admin Access</p>
+
+    <div class="login-field">
+      <label for="login-email">Email</label>
+      <input type="email" id="login-email" placeholder="your@email.com" autocomplete="email" />
+    </div>
+    <div class="login-field" style="margin-top:0.75rem;">
+      <label for="login-password">Password</label>
+      <input type="password" id="login-password" placeholder="Password" autocomplete="current-password" />
+    </div>
+
+    <button class="login-btn" id="login-btn" type="button">Sign In</button>
+    <p class="login-error" id="login-error" style="display:none;">Incorrect email or password. Please try again.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     ADMIN APP
+     ════════════════════════════════════════════════════════ -->
+<div class="admin-layout" id="admin-app" style="display:none;">
+
+  <!-- ── Sidebar ─────────────────────────────────────── -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-logo">NYA Admin</div>
+    <nav class="sidebar-nav">
+      <button class="sidebar-link" data-view="dashboard">Dashboard</button>
+      <button class="sidebar-link" data-view="editor-new">New Post</button>
+
+      <span class="sidebar-section-label">Posts</span>
+      <button class="sidebar-link" data-view="posts-all">All Posts</button>
+      <button class="sidebar-link" data-view="posts-fashion">Fashion</button>
+      <button class="sidebar-link" data-view="posts-faith">Faith</button>
+      <button class="sidebar-link" data-view="posts-lifestyle">Lifestyle</button>
+
+      <span class="sidebar-section-label">Settings</span>
+      <button class="sidebar-link" data-view="export">Export Posts</button>
+      <button class="sidebar-link" data-view="import">Import Posts</button>
+      <span class="sidebar-section-label">Site</span>
+      <a href="/" class="sidebar-link" target="_blank">View Site ↗</a>
+      <button class="sidebar-link" id="logout-btn">Logout</button>
+    </nav>
+    <div class="sidebar-footer">
+      Styled by Nana Yaa Ansah<br>
+      Admin Panel
+    </div>
+  </aside>
+
+  <!-- ── Main Content ────────────────────────────────── -->
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <h1 class="topbar-title" id="topbar-title">Dashboard</h1>
+      <div class="topbar-actions" id="topbar-actions"></div>
+    </div>
+
+    <div class="admin-content" id="admin-content">
+      <!-- Views rendered here by JS -->
+    </div>
+  </main>
+
+</div>
+
+<!-- ── Delete Confirm Modal ───────────────────────────── -->
+<div class="delete-confirm" id="delete-confirm">
+  <div class="delete-confirm-box">
+    <h2 class="delete-confirm-title">Delete Post</h2>
+    <p class="delete-confirm-warning">Are you sure you want to delete this post?<br>This cannot be undone.</p>
+    <div class="delete-confirm-actions">
+      <button class="btn-admin" id="delete-cancel">Cancel</button>
+      <button class="btn-admin btn-admin--danger" id="delete-confirm-btn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Toast ──────────────────────────────────────────── -->
+<div class="toast" id="toast"></div>
+
+<!-- ════════════════════════════════════════════════════════
+     JavaScript
+     ════════════════════════════════════════════════════════ -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="blog.js"></script>
+<script>
+(async function () {
+  'use strict';
+
+  /* ─── State ───────────────────────────────────────────── */
+  var currentView   = '';
+  var currentPostId = null;   // id of post being edited
+  var deleteTargetId = null;
+  var slugLocked    = false;
+  var fileInput     = null;   // hidden file input for import
+
+  /* ─── DOM refs ────────────────────────────────────────── */
+  var loginScreen  = document.getElementById('login-screen');
+  var adminApp     = document.getElementById('admin-app');
+  var loginPwField = document.getElementById('login-password');
+  var loginBtn     = document.getElementById('login-btn');
+  var loginError   = document.getElementById('login-error');
+  var topbarTitle  = document.getElementById('topbar-title');
+  var topbarActions = document.getElementById('topbar-actions');
+  var adminContent = document.getElementById('admin-content');
+  var deleteModal  = document.getElementById('delete-confirm');
+  var toastEl      = document.getElementById('toast');
+
+  /* ─── Init ────────────────────────────────────────────── */
+  var loginEmailField = document.getElementById('login-email');
+
+  async function init() {
+    var session = await BlogCMS.getSession();
+    if (session) {
+      showApp();
+    } else {
+      loginScreen.style.display = 'flex';
+      adminApp.style.display    = 'none';
+    }
+
+    loginBtn.addEventListener('click', handleLogin);
+    loginPwField.addEventListener('keydown', function (e) { if (e.key === 'Enter') handleLogin(); });
+    loginEmailField.addEventListener('keydown', function (e) { if (e.key === 'Enter') loginPwField.focus(); });
+
+    document.getElementById('logout-btn').addEventListener('click', async function () {
+      await BlogCMS.logout();
+      loginScreen.style.display = 'flex';
+      adminApp.style.display    = 'none';
+      loginEmailField.value     = '';
+      loginPwField.value        = '';
+      loginError.style.display  = 'none';
+    });
+
+    BlogCMS.onAuthChange(function (session) {
+      if (!session) {
+        loginScreen.style.display = 'flex';
+        adminApp.style.display    = 'none';
+      }
+    });
+
+    document.getElementById('delete-cancel').addEventListener('click', function () {
+      deleteModal.classList.remove('visible');
+      deleteTargetId = null;
+    });
+
+    document.getElementById('delete-confirm-btn').addEventListener('click', async function () {
+      if (deleteTargetId) {
+        try {
+          await BlogCMS.remove(deleteTargetId);
+          deleteModal.classList.remove('visible');
+          showToast('Post deleted.');
+          deleteTargetId = null;
+          await showView('posts-all');
+        } catch (err) {
+          showToast('Delete failed: ' + err.message);
+        }
+      }
+    });
+
+    // Sidebar nav
+    document.querySelectorAll('[data-view]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        showView(btn.getAttribute('data-view'));
+      });
+    });
+  }
+
+  /* ─── Login ───────────────────────────────────────────── */
+  async function handleLogin() {
+    var email = loginEmailField.value.trim();
+    var pw    = loginPwField.value;
+    if (!email || !pw) return;
+    loginBtn.disabled    = true;
+    loginBtn.textContent = 'Signing in…';
+    try {
+      await BlogCMS.login(email, pw);
+      loginError.style.display = 'none';
+      loginPwField.value = '';
+      showApp();
+    } catch (err) {
+      loginError.style.display = 'block';
+    } finally {
+      loginBtn.disabled    = false;
+      loginBtn.textContent = 'Sign In';
+    }
+  }
+
+  function showApp() {
+    loginScreen.style.display = 'none';
+    adminApp.style.display    = 'grid';
+    showView('dashboard');
+  }
+
+  /* ─── Toast ───────────────────────────────────────────── */
+  var toastTimer;
+  function showToast(msg, type) {
+    toastEl.textContent = msg;
+    toastEl.className   = 'toast' + (type === 'gold' ? ' toast--gold' : '');
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () {
+      toastEl.classList.remove('show');
+    }, 2800);
+  }
+
+  /* ─── Sidebar active state ────────────────────────────── */
+  function setActiveLink(viewName) {
+    document.querySelectorAll('.sidebar-link').forEach(function (el) {
+      el.classList.remove('active');
+    });
+    var el = document.querySelector('[data-view="' + viewName + '"]');
+    if (el) el.classList.add('active');
+  }
+
+  /* ─── Show View ───────────────────────────────────────── */
+  async function showView(name, data) {
+    currentView = name;
+    setActiveLink(name);
+
+    switch (name) {
+      case 'dashboard':
+        topbarTitle.textContent = 'Dashboard';
+        topbarActions.innerHTML = '<button class="btn-admin btn-admin--gold" onclick="showView(\'editor-new\')">+ New Post</button>';
+        await renderDashboard();
+        break;
+      case 'editor-new':
+        topbarTitle.textContent = 'New Post';
+        topbarActions.innerHTML = '';
+        currentPostId = null;
+        slugLocked    = false;
+        await renderEditor(null);
+        break;
+      case 'posts-all':
+        topbarTitle.textContent = 'All Posts';
+        topbarActions.innerHTML = '<button class="btn-admin btn-admin--gold" onclick="showView(\'editor-new\')">+ New Post</button>';
+        await renderPostsList(null);
+        break;
+      case 'posts-fashion':
+        topbarTitle.textContent = 'Fashion Posts';
+        topbarActions.innerHTML = '<button class="btn-admin btn-admin--gold" onclick="showView(\'editor-new\')">+ New Post</button>';
+        await renderPostsList('fashion');
+        break;
+      case 'posts-faith':
+        topbarTitle.textContent = 'Faith Posts';
+        topbarActions.innerHTML = '<button class="btn-admin btn-admin--gold" onclick="showView(\'editor-new\')">+ New Post</button>';
+        await renderPostsList('faith');
+        break;
+      case 'posts-lifestyle':
+        topbarTitle.textContent = 'Lifestyle Posts';
+        topbarActions.innerHTML = '<button class="btn-admin btn-admin--gold" onclick="showView(\'editor-new\')">+ New Post</button>';
+        await renderPostsList('lifestyle');
+        break;
+      case 'export':
+        topbarTitle.textContent = 'Export Posts';
+        topbarActions.innerHTML = '';
+        await renderExport();
+        break;
+      case 'import':
+        topbarTitle.textContent = 'Import Posts';
+        topbarActions.innerHTML = '';
+        renderImport();
+        break;
+    }
+  }
+
+  // Expose globally so inline onclick works
+  window.showView = showView;
+
+  /* ─── Dashboard ───────────────────────────────────────── */
+  async function renderDashboard() {
+    adminContent.innerHTML = '<p style="padding:2rem;color:#888">Loading…</p>';
+    var posts     = await BlogCMS.getPosts();
+    var published = posts.filter(function (p) { return p.status === 'published'; });
+    var drafts    = posts.filter(function (p) { return p.status === 'draft'; });
+    var fashion   = posts.filter(function (p) { return p.category === 'fashion'; });
+    var faith     = posts.filter(function (p) { return p.category === 'faith'; });
+    var lifestyle = posts.filter(function (p) { return p.category === 'lifestyle'; });
+    var recent    = posts.slice().sort(function (a, b) {
+      return new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0);
+    }).slice(0, 5);
+
+    var html = '<div class="stats-grid">' +
+      statCard(posts.length, 'Total Posts') +
+      statCard(published.length, 'Published') +
+      statCard(drafts.length, 'Drafts') +
+      statCard(fashion.length + ' / ' + faith.length + ' / ' + lifestyle.length, 'F / F / L') +
+    '</div>';
+
+    html += '<div class="admin-card"><span class="admin-card-title">Recent Posts</span>';
+    if (!recent.length) {
+      html += '<p style="color:#888;font-size:0.85rem;">No posts yet. <button class="btn-admin btn-admin--gold" onclick="showView(\'editor-new\')" style="margin-left:0.5rem;">Create your first post</button></p>';
+    } else {
+      recent.forEach(function (p) {
+        html += '<div class="recent-post-row">' +
+          '<span class="recent-post-title">' + escHtml(p.title) + '</span>' +
+          '<span class="recent-post-meta">' +
+            '<span class="post-status-badge post-status-badge--' + p.status + '">' + p.status + '</span>' +
+          '</span>' +
+          '<button class="btn-admin btn-admin--sm" onclick="showView(\'editor-edit\', \'' + p.id + '\')">Edit</button>' +
+        '</div>';
+      });
+    }
+    html += '</div>';
+
+    adminContent.innerHTML = html;
+  }
+
+  function statCard(num, label) {
+    return '<div class="stat-card"><span class="stat-num">' + num + '</span><span class="stat-label">' + label + '</span></div>';
+  }
+
+  /* ─── Posts List ──────────────────────────────────────── */
+  async function renderPostsList(category) {
+    adminContent.innerHTML = '<p style="padding:2rem;color:#888">Loading…</p>';
+    var posts = await BlogCMS.getPosts();
+    if (category) {
+      posts = posts.filter(function (p) { return p.category === category; });
+    }
+    posts.sort(function (a, b) {
+      return new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0);
+    });
+
+    var html = '<div class="admin-card">';
+    if (!posts.length) {
+      html += '<p style="color:#888;font-size:0.85rem;padding:1rem 0;">No posts found. ' +
+        '<button class="btn-admin btn-admin--gold" onclick="showView(\'editor-new\')" style="margin-left:0.5rem;">Create a post</button></p>';
+    } else {
+      html += '<table class="posts-table">' +
+        '<thead><tr>' +
+          '<th>Title</th><th>Category</th><th>Status</th><th>Date</th><th>Actions</th>' +
+        '</tr></thead><tbody>';
+      posts.forEach(function (p) {
+        html += '<tr>' +
+          '<td class="post-title-cell">' + escHtml(p.title) + '</td>' +
+          '<td><span class="post-cat-badge">' + p.category + '</span></td>' +
+          '<td><span class="post-status-badge post-status-badge--' + p.status + '">' + p.status + '</span></td>' +
+          '<td>' + BlogCMS.formatDate(p.publishedAt) + '</td>' +
+          '<td class="table-actions">' +
+            '<button class="btn-admin btn-admin--sm" onclick="showView(\'editor-edit\', \'' + p.id + '\')">Edit</button>' +
+            '<button class="btn-admin btn-admin--sm btn-admin--danger" onclick="confirmDelete(\'' + p.id + '\')">Delete</button>' +
+          '</td>' +
+        '</tr>';
+      });
+      html += '</tbody></table>';
+    }
+    html += '</div>';
+    adminContent.innerHTML = html;
+  }
+
+  window.confirmDelete = function (id) {
+    deleteTargetId = id;
+    deleteModal.classList.add('visible');
+  };
+
+  /* ─── Editor ──────────────────────────────────────────── */
+  async function renderEditor(postId) {
+    currentPostId = postId;
+    var post = null;
+    if (postId) {
+      adminContent.innerHTML = '<p style="padding:2rem;color:#888">Loading…</p>';
+      var resp = await BlogCMS.db.from('posts').select('*').eq('id', postId).maybeSingle();
+      if (resp.data) {
+        var d = resp.data;
+        post = { id: d.id, slug: d.slug, title: d.title, category: d.category,
+          status: d.status, publishedAt: d.published_at,
+          coverImage: d.cover_image || '', coverAlt: d.cover_alt || '',
+          excerpt: d.excerpt || '', body: d.body || '',
+          seoTitle: d.seo_title || '', seoDesc: d.seo_desc || '', tags: d.tags || [] };
+      }
+    }
+
+    var titleVal     = post ? escAttr(post.title)      : '';
+    var slugVal      = post ? escAttr(post.slug)       : '';
+    var statusVal    = post ? post.status              : 'draft';
+    var catVal       = post ? post.category            : 'fashion';
+    var tagsVal      = post ? escAttr((post.tags || []).join(', ')) : '';
+    var coverVal     = post ? escAttr(post.coverImage || '') : '';
+    var coverAltVal  = post ? escAttr(post.coverAlt || '')  : '';
+    var excerptVal   = post ? escAttr(post.excerpt || '')   : '';
+    var seoTitleVal  = post ? escAttr(post.seoTitle || '')  : '';
+    var seoDescVal   = post ? escAttr(post.seoDesc || '')   : '';
+    var bodyHtml     = post ? (post.body || '')        : '';
+
+    var coverPreviewStyle = (post && post.coverImage) ? ' class="cover-preview visible"' : ' class="cover-preview"';
+    var coverPreviewSrc   = (post && post.coverImage) ? escAttr(post.coverImage) : '';
+
+    var html =
+      '<div class="editor-titlebar">' +
+        '<input type="text" class="editor-title-input" id="editor-title" placeholder="Post title…" value="' + titleVal + '" />' +
+      '</div>' +
+      '<div class="editor-layout">' +
+        '<div class="editor-left">' +
+          '<div class="toolbar" id="toolbar">' +
+            '<button class="toolbar-btn" data-cmd="bold" title="Bold"><b>B</b></button>' +
+            '<button class="toolbar-btn" data-cmd="italic" title="Italic"><i>I</i></button>' +
+            '<span class="toolbar-sep"></span>' +
+            '<button class="toolbar-btn" data-cmd="h2" title="Heading 2">H2</button>' +
+            '<button class="toolbar-btn" data-cmd="h3" title="Heading 3">H3</button>' +
+            '<span class="toolbar-sep"></span>' +
+            '<button class="toolbar-btn" data-cmd="insertUnorderedList" title="Bullet List">UL</button>' +
+            '<button class="toolbar-btn" data-cmd="insertOrderedList" title="Numbered List">OL</button>' +
+            '<span class="toolbar-sep"></span>' +
+            '<button class="toolbar-btn" data-cmd="blockquote" title="Blockquote">"</button>' +
+            '<button class="toolbar-btn" data-cmd="link" title="Insert Link">Link</button>' +
+            '<button class="toolbar-btn" data-cmd="image" title="Insert Image">Img</button>' +
+            '<span class="toolbar-sep"></span>' +
+            '<button class="toolbar-btn" data-cmd="insertHorizontalRule" title="Horizontal Rule">—</button>' +
+            '<button class="toolbar-btn" data-cmd="removeFormat" title="Clear Formatting">Tx</button>' +
+          '</div>' +
+          '<div class="editor-body" id="editor-body" contenteditable="true" spellcheck="true">' +
+            bodyHtml +
+          '</div>' +
+        '</div>' +
+        '<div class="editor-sidebar" id="editor-sidebar">' +
+
+          /* Publish panel */
+          '<div class="editor-sidebar-panel">' +
+            '<span class="panel-title">Publish</span>' +
+            '<div class="field-group">' +
+              '<label class="field-label">Status</label>' +
+              '<select class="field-select" id="field-status">' +
+                '<option value="draft"' + (statusVal === 'draft' ? ' selected' : '') + '>Draft</option>' +
+                '<option value="published"' + (statusVal === 'published' ? ' selected' : '') + '>Published</option>' +
+              '</select>' +
+            '</div>' +
+            '<div class="editor-actions">' +
+              '<button class="btn-admin btn-admin--primary" onclick="savePost(\'draft\')">Save Draft</button>' +
+              '<button class="btn-admin btn-admin--gold" onclick="savePost(\'published\')">Publish</button>' +
+            '</div>' +
+            (post ? '<button class="btn-admin btn-admin--danger" onclick="confirmDelete(\'' + post.id + '\')" style="width:100%;justify-content:center;">Delete Post</button>' : '') +
+          '</div>' +
+
+          /* Post Settings */
+          '<div class="editor-sidebar-panel">' +
+            '<span class="panel-title">Post Settings</span>' +
+            '<div class="field-group">' +
+              '<label class="field-label" for="field-category">Category</label>' +
+              '<select class="field-select" id="field-category">' +
+                '<option value="fashion"'  + (catVal === 'fashion'   ? ' selected' : '') + '>Fashion</option>' +
+                '<option value="faith"'    + (catVal === 'faith'     ? ' selected' : '') + '>Faith</option>' +
+                '<option value="lifestyle"' + (catVal === 'lifestyle' ? ' selected' : '') + '>Lifestyle</option>' +
+              '</select>' +
+            '</div>' +
+            '<div class="field-group">' +
+              '<label class="field-label" for="field-slug">Slug</label>' +
+              '<div class="slug-row">' +
+                '<input type="text" class="field-input" id="field-slug" value="' + slugVal + '" placeholder="url-friendly-slug" />' +
+                '<button class="slug-lock-indicator" id="slug-lock-btn" title="Click to unlock auto-slug">🔓 Auto</button>' +
+              '</div>' +
+            '</div>' +
+            '<div class="field-group">' +
+              '<label class="field-label" for="field-tags">Tags (comma-separated)</label>' +
+              '<input type="text" class="field-input" id="field-tags" value="' + tagsVal + '" placeholder="fashion, style, blazer" />' +
+            '</div>' +
+          '</div>' +
+
+          /* Cover Image */
+          '<div class="editor-sidebar-panel">' +
+            '<span class="panel-title">Cover Image</span>' +
+            '<div class="field-group">' +
+              '<label class="field-label" for="field-cover">Image URL or Path</label>' +
+              '<input type="text" class="field-input" id="field-cover" value="' + coverVal + '" placeholder="assets/img/photo.jpg" />' +
+            '</div>' +
+            '<div class="field-group">' +
+              '<label class="field-label" for="field-cover-alt">Alt Text</label>' +
+              '<input type="text" class="field-input" id="field-cover-alt" value="' + coverAltVal + '" placeholder="Description of image" />' +
+            '</div>' +
+            '<img id="cover-preview" src="' + coverPreviewSrc + '" alt="Cover preview"' + coverPreviewStyle + ' />' +
+          '</div>' +
+
+          /* Excerpt */
+          '<div class="editor-sidebar-panel">' +
+            '<span class="panel-title">Excerpt</span>' +
+            '<div class="field-group">' +
+              '<label class="field-label" for="field-excerpt">Short Summary</label>' +
+              '<textarea class="field-textarea" id="field-excerpt" maxlength="200" placeholder="1–2 sentence summary of the post…">' + excerptVal + '</textarea>' +
+              '<span class="char-count" id="excerpt-count">0 / 200</span>' +
+            '</div>' +
+          '</div>' +
+
+          /* SEO */
+          '<div class="editor-sidebar-panel">' +
+            '<span class="panel-title">SEO</span>' +
+            '<div class="field-group">' +
+              '<label class="field-label" for="field-seo-title">Meta Title</label>' +
+              '<input type="text" class="field-input" id="field-seo-title" value="' + seoTitleVal + '" maxlength="70" placeholder="SEO title (≤60 chars ideal)" />' +
+              '<span class="char-count" id="seo-title-count">0 / 70</span>' +
+            '</div>' +
+            '<div class="field-group">' +
+              '<label class="field-label" for="field-seo-desc">Meta Description</label>' +
+              '<textarea class="field-textarea" id="field-seo-desc" maxlength="180" placeholder="SEO description (≤160 chars ideal)">' + seoDescVal + '</textarea>' +
+              '<span class="char-count" id="seo-desc-count">0 / 180</span>' +
+            '</div>' +
+          '</div>' +
+
+        '</div>' + /* end editor-sidebar */
+      '</div>'; /* end editor-layout */
+
+    adminContent.innerHTML = html;
+
+    /* ── Bind editor events ─── */
+    var titleInput = document.getElementById('editor-title');
+    var slugInput  = document.getElementById('field-slug');
+    var slugLockBtn = document.getElementById('slug-lock-btn');
+    var coverInput  = document.getElementById('field-cover');
+    var coverPreview = document.getElementById('cover-preview');
+    var excerptTA   = document.getElementById('field-excerpt');
+    var seoTitleIn  = document.getElementById('field-seo-title');
+    var seoDescTA   = document.getElementById('field-seo-desc');
+
+    // Auto-slug from title
+    titleInput.addEventListener('input', function () {
+      if (!slugLocked) {
+        slugInput.value = BlogCMS.slugify(titleInput.value);
+      }
+    });
+
+    // Slug lock toggle
+    slugLocked = !!post; // lock if editing existing post
+    updateSlugLockBtn();
+
+    slugInput.addEventListener('input', function () {
+      slugLocked = true;
+      updateSlugLockBtn();
+    });
+
+    slugLockBtn.addEventListener('click', function () {
+      slugLocked = !slugLocked;
+      updateSlugLockBtn();
+      if (!slugLocked && titleInput.value) {
+        slugInput.value = BlogCMS.slugify(titleInput.value);
+      }
+    });
+
+    function updateSlugLockBtn() {
+      slugLockBtn.textContent = slugLocked ? '🔒 Locked' : '🔓 Auto';
+      slugLockBtn.title = slugLocked ? 'Click to re-enable auto-slug from title' : 'Auto-syncing from title';
+    }
+
+    // Cover image preview
+    coverInput.addEventListener('input', function () {
+      var v = coverInput.value.trim();
+      if (v) {
+        coverPreview.src = v;
+        coverPreview.classList.add('visible');
+      } else {
+        coverPreview.src = '';
+        coverPreview.classList.remove('visible');
+      }
+    });
+
+    // Char counts
+    function updateCount(el, countEl, max) {
+      var len = el.value.length;
+      countEl.textContent = len + ' / ' + max;
+      if (len > max * 0.9) countEl.classList.add('over');
+      else countEl.classList.remove('over');
+    }
+
+    excerptTA.addEventListener('input', function () {
+      updateCount(excerptTA, document.getElementById('excerpt-count'), 200);
+    });
+    seoTitleIn.addEventListener('input', function () {
+      updateCount(seoTitleIn, document.getElementById('seo-title-count'), 70);
+    });
+    seoDescTA.addEventListener('input', function () {
+      updateCount(seoDescTA, document.getElementById('seo-desc-count'), 180);
+    });
+
+    // Initial counts
+    updateCount(excerptTA, document.getElementById('excerpt-count'), 200);
+    updateCount(seoTitleIn, document.getElementById('seo-title-count'), 70);
+    updateCount(seoDescTA, document.getElementById('seo-desc-count'), 180);
+
+    // Toolbar
+    document.getElementById('toolbar').addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-cmd]');
+      if (!btn) return;
+      e.preventDefault();
+      var cmd = btn.getAttribute('data-cmd');
+      execCmd(cmd);
+    });
+  }
+
+  /* ─── execCmd ─────────────────────────────────────────── */
+  function execCmd(cmd) {
+    var body = document.getElementById('editor-body');
+    if (!body) return;
+    body.focus();
+
+    switch (cmd) {
+      case 'h2':
+        document.execCommand('formatBlock', false, '<h2>');
+        break;
+      case 'h3':
+        document.execCommand('formatBlock', false, '<h3>');
+        break;
+      case 'blockquote':
+        document.execCommand('formatBlock', false, '<blockquote>');
+        break;
+      case 'link':
+        var url = prompt('Enter URL:');
+        if (url) {
+          document.execCommand('createLink', false, url);
+          // Open in new tab
+          var links = body.querySelectorAll('a:not([target])');
+          links.forEach(function (a) { a.target = '_blank'; a.rel = 'noopener'; });
+        }
+        break;
+      case 'image':
+        var imgUrl = prompt('Image URL or path (e.g. assets/img/photo.jpg):');
+        if (imgUrl) {
+          var imgAlt = prompt('Alt text:') || '';
+          document.execCommand('insertHTML', false,
+            '<img src="' + imgUrl + '" alt="' + imgAlt + '" style="max-width:100%">');
+        }
+        break;
+      default:
+        document.execCommand(cmd, false, null);
+        break;
+    }
+  }
+
+  /* ─── Save Post ───────────────────────────────────────── */
+  window.savePost = async function (forceStatus) {
+    var title = document.getElementById('editor-title').value.trim();
+    if (!title) {
+      showToast('Please add a title before saving.');
+      document.getElementById('editor-title').focus();
+      return;
+    }
+
+    var slug = document.getElementById('field-slug').value.trim() ||
+               BlogCMS.slugify(title);
+    var status   = forceStatus || document.getElementById('field-status').value;
+    var category = document.getElementById('field-category').value;
+    var tags     = document.getElementById('field-tags').value
+                     .split(',').map(function (t) { return t.trim(); })
+                     .filter(Boolean);
+    var coverImage  = document.getElementById('field-cover').value.trim();
+    var coverAlt    = document.getElementById('field-cover-alt').value.trim();
+    var excerpt     = document.getElementById('field-excerpt').value.trim();
+    var seoTitle    = document.getElementById('field-seo-title').value.trim();
+    var seoDesc     = document.getElementById('field-seo-desc').value.trim();
+    var body        = document.getElementById('editor-body').innerHTML;
+
+    var existing = null;
+    if (currentPostId) {
+      var er = await BlogCMS.db.from('posts').select('*').eq('id', currentPostId).maybeSingle();
+      if (er.data) existing = { id: er.data.id, publishedAt: er.data.published_at, status: er.data.status };
+    }
+    var now = new Date().toISOString();
+
+    var post = {
+      id:          existing ? existing.id          : BlogCMS.uid(),
+      slug:        slug,
+      title:       title,
+      category:    category,
+      status:      status,
+      publishedAt: (status === 'published' && (!existing || existing.status !== 'published'))
+                     ? now
+                     : (existing ? existing.publishedAt : now),
+      coverImage:  coverImage,
+      coverAlt:    coverAlt,
+      excerpt:     excerpt,
+      body:        body,
+      seoTitle:    seoTitle,
+      seoDesc:     seoDesc,
+      tags:        tags
+    };
+
+    try {
+      var saved = await BlogCMS.save(post);
+      currentPostId = saved.id;
+      slugLocked    = true;
+      showToast(status === 'published' ? 'Post published!' : 'Draft saved.', status === 'published' ? 'gold' : '');
+      document.getElementById('field-status').value = status;
+    } catch (err) {
+      showToast('Save failed: ' + err.message);
+    }
+  };
+
+  /* ─── Export / Import ─────────────────────────────────── */
+  async function renderExport() {
+    var posts = await BlogCMS.getPosts();
+    adminContent.innerHTML =
+      '<div class="admin-card">' +
+        '<span class="admin-card-title">Export Posts</span>' +
+        '<p style="font-size:0.9rem;color:#555;margin-bottom:1.5rem;">' +
+          'Download all ' + posts.length + ' post' + (posts.length !== 1 ? 's' : '') + ' as a JSON backup file. ' +
+          'You can re-import this file on any device.' +
+        '</p>' +
+        '<button class="btn-admin btn-admin--primary" onclick="BlogCMS.exportPosts()">Download JSON Backup</button>' +
+      '</div>';
+  }
+
+  function renderImport() {
+    adminContent.innerHTML =
+      '<div class="admin-card">' +
+        '<span class="admin-card-title">Import Posts</span>' +
+        '<p style="font-size:0.9rem;color:#555;margin-bottom:1.5rem;">' +
+          'Import posts from a previously exported JSON file. Existing posts with the same ID will be overwritten.' +
+        '</p>' +
+        '<div class="import-zone" id="import-zone">' +
+          '<div>Drop your JSON file here, or click to browse.</div>' +
+          '<span class="import-zone-label">Select File</span>' +
+        '</div>' +
+        '<p id="import-result" style="margin-top:1rem;font-size:0.85rem;color:#888;"></p>' +
+      '</div>';
+
+    // Create hidden file input
+    if (!fileInput) {
+      fileInput = document.createElement('input');
+      fileInput.type   = 'file';
+      fileInput.accept = '.json,application/json';
+      fileInput.style.display = 'none';
+      document.body.appendChild(fileInput);
+    }
+
+    var zone = document.getElementById('import-zone');
+    zone.addEventListener('click', function () { fileInput.click(); });
+
+    zone.addEventListener('dragover', function (e) {
+      e.preventDefault();
+      zone.style.borderColor = '#c4955a';
+    });
+
+    zone.addEventListener('dragleave', function () {
+      zone.style.borderColor = '';
+    });
+
+    zone.addEventListener('drop', function (e) {
+      e.preventDefault();
+      zone.style.borderColor = '';
+      var file = e.dataTransfer.files[0];
+      if (file) processImportFile(file);
+    });
+
+    fileInput.onchange = function () {
+      if (fileInput.files[0]) processImportFile(fileInput.files[0]);
+    };
+  }
+
+  function processImportFile(file) {
+    var reader = new FileReader();
+    reader.onload = async function (e) {
+      var ok = await BlogCMS.importPosts(e.target.result);
+      var res = document.getElementById('import-result');
+      if (ok) {
+        if (res) { res.style.color = '#2e7d32'; res.textContent = 'Posts imported successfully.'; }
+        showToast('Posts imported!', 'gold');
+      } else {
+        if (res) { res.style.color = '#c0392b'; res.textContent = 'Import failed — invalid JSON file.'; }
+        showToast('Import failed.');
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  /* ─── Helpers ─────────────────────────────────────────── */
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function escAttr(str) {
+    return String(str || '').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  /* ─── Boot ────────────────────────────────────────────── */
+  await init();
+
+})();
+</script>
+
+</body>
+</html>
