@@ -539,20 +539,21 @@
     }
 
     function mosaicCard(p, size) {
-      var imgStyle = p.coverImage ? 'background-image:url(' + p.coverImage + ');' : '';
-      var noImg    = p.coverImage ? '' : ' mosaic-card--no-img';
       var url      = '/blog/post?slug=' + encodeURIComponent(p.slug);
+      var imgStyle = p.coverImage ? 'background-image:url(' + p.coverImage + ');' : 'background:linear-gradient(135deg,#2c2825 0%,#4a3728 100%);';
       return (
-        '<a href="' + url + '" class="mosaic-card mosaic-card--' + size + noImg + '">' +
-          '<div class="mosaic-card__img" style="' + imgStyle + '"></div>' +
-          '<div class="mosaic-card__overlay"></div>' +
-          '<div class="mosaic-card__body">' +
-            '<span class="mosaic-card__category">' + catCapital(p.category) + '</span>' +
-            '<h2 class="mosaic-card__title">' + p.title + '</h2>' +
-            (size !== 'small' ? '<p class="mosaic-card__excerpt">' + (p.excerpt || '') + '</p>' : '') +
-            '<span class="mosaic-card__link">Read More →</span>' +
+        '<article class="post--mosaic post--mosaic-' + size + '">' +
+          '<a href="' + url + '" class="post-image" style="' + imgStyle + '">' +
+            '<div class="post-image-overlay"></div>' +
+            '<span class="post-badge">' + catCapital(p.category) + '</span>' +
+          '</a>' +
+          '<div class="post-body">' +
+            '<span class="post-date">' + formatDate(p.publishedAt) + '</span>' +
+            '<h2 class="post-title"><a href="' + url + '" style="color:inherit;text-decoration:none;">' + p.title + '</a></h2>' +
+            (size !== 'small' ? '<p class="post-excerpt">' + (p.excerpt || '') + '</p>' : '') +
+            '<a href="' + url + '" class="post-link">Read More →</a>' +
           '</div>' +
-        '</a>'
+        '</article>'
       );
     }
 
@@ -565,7 +566,7 @@
       var p2 = posts[2] || null;
       var p3 = posts[3] || null;
 
-      // 2×2 mosaic: top-left (large), bottom-left (medium), top-right (medium), bottom-right (small)
+      // 2×2 mosaic: top-left large, bottom-left medium, top-right medium, bottom-right small
       grid.innerHTML =
         (p0 ? mosaicCard(p0, 'large')  : '') +
         (p2 ? mosaicCard(p2, 'medium') : '') +

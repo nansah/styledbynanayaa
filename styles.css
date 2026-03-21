@@ -633,95 +633,92 @@ ul, ol { list-style: none; }
   margin: 0 auto;
   position: relative;
 }
-/* ── The Edit — 4-post image mosaic ─────────────────────────────── */
+/* ── The Edit — 4-post mosaic ────────────────────────────────────── */
 .featured-grid {
   display: grid;
-  grid-template-columns: 1.25fr 1fr;
-  grid-template-rows: 460px 320px;
-  gap: 4px;
+  grid-template-columns: 1.3fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 3px;
 }
 
-/* Each mosaic card is a full-bleed image with overlaid text */
-.mosaic-card {
-  position: relative;
-  overflow: hidden;
-  background: var(--charcoal);
-  display: block;
-  text-decoration: none;
+/* Each card: image on top, text body below */
+.post--mosaic {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background: var(--white);
 }
-.mosaic-card__img {
-  position: absolute;
-  inset: 0;
+.post--mosaic .post-image {
+  position: relative;
   background-size: cover;
   background-position: center;
-  transition: transform 0.55s cubic-bezier(0.25,0.46,0.45,0.94);
+  overflow: hidden;
 }
-.mosaic-card:hover .mosaic-card__img {
-  transform: scale(1.05);
-}
-.mosaic-card__overlay {
+.post--mosaic-large  .post-image { height: 380px; }
+.post--mosaic-medium .post-image { height: 260px; }
+.post--mosaic-small  .post-image { height: 200px; }
+
+.post-image-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top,
-    rgba(18,13,10,0.78) 0%,
-    rgba(18,13,10,0.18) 55%,
-    transparent 100%);
+  background: linear-gradient(to top, rgba(44,40,37,0.18) 0%, transparent 60%);
 }
-.mosaic-card__body {
+.post-badge {
   position: absolute;
-  bottom: 0; left: 0; right: 0;
-  padding: 1.75rem;
-}
-.mosaic-card__category {
-  display: inline-block;
-  font-family: var(--font-sans);
-  font-size: 0.58rem;
+  top: 1.25rem; left: 1.25rem;
+  font-size: 0.6rem;
   font-weight: 400;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--gold-light);
-  margin-bottom: 0.6rem;
+  color: var(--gold-dark);
+  border: 1px solid rgba(196,149,90,0.5);
+  padding: 0.35rem 0.75rem;
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(6px);
 }
-.mosaic-card__title {
+.post-body {
+  padding: 1.5rem 1.75rem 1.75rem;
+  background: var(--white);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.post-date {
+  display: block;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.post-title {
   font-family: var(--font-serif);
-  font-weight: 300;
-  line-height: 1.22;
-  color: var(--white);
-  margin: 0 0 0.65rem;
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--charcoal);
+  margin: 0;
 }
-.mosaic-card--large .mosaic-card__title  { font-size: 1.75rem; }
-.mosaic-card--medium .mosaic-card__title { font-size: 1.3rem; }
-.mosaic-card--small .mosaic-card__title  { font-size: 1.05rem; }
+.post--mosaic-large  .post-title { font-size: 1.5rem; }
+.post--mosaic-medium .post-title { font-size: 1.15rem; }
+.post--mosaic-small  .post-title { font-size: 1rem; }
 
-.mosaic-card__excerpt {
-  font-family: var(--font-sans);
-  font-size: 0.82rem;
-  font-weight: 300;
-  color: rgba(255,255,255,0.75);
-  line-height: 1.65;
-  margin-bottom: 0.9rem;
+.post-excerpt {
+  font-size: 0.85rem;
+  color: var(--warm-gray);
+  line-height: 1.7;
+  margin: 0.2rem 0 0.5rem;
 }
-.mosaic-card--small .mosaic-card__excerpt { display: none; }
+.post--mosaic-small .post-excerpt { display: none; }
 
-.mosaic-card__link {
-  font-family: var(--font-sans);
-  font-size: 0.65rem;
+.post-link {
+  font-size: 0.68rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--gold-light);
-  border-bottom: 1px solid rgba(196,149,90,0.5);
+  color: var(--charcoal);
+  border-bottom: 1px solid var(--gold);
   padding-bottom: 2px;
-  transition: color 0.2s, border-color 0.2s;
+  align-self: flex-start;
+  transition: color 0.2s;
 }
-.mosaic-card:hover .mosaic-card__link {
-  color: var(--white);
-  border-color: var(--white);
-}
-
-/* No-image fallback */
-.mosaic-card--no-img {
-  background: linear-gradient(135deg, #2c2825 0%, #4a3728 100%);
-}
+.post-link:hover { color: var(--gold-dark); }
 
 /* ── CATEGORY SECTIONS ───────────────────────────────────────────── */
 .category-section {
@@ -1993,8 +1990,9 @@ cite {
 @media (max-width: 1100px) {
   .featured-grid {
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 340px 260px;
   }
+  .post--mosaic-large .post-image  { height: 300px; }
+  .post--mosaic-medium .post-image { height: 220px; }
   .hero-inner {
     gap: 2.5rem;
   }
@@ -2049,13 +2047,7 @@ cite {
   .home-shop-grid { grid-template-columns: 1fr; }
   .home-ebook-book { width: 170px; }
   .home-ebook-stats { gap: 1.25rem; }
-  .featured-grid {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 220px 180px;
-  }
-  .mosaic-card__title { font-size: 0.9rem !important; }
-  .mosaic-card__excerpt { display: none; }
-  .mosaic-card__body { padding: 0.9rem; }
+  .featured-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 720px) {
@@ -2065,8 +2057,7 @@ cite {
   .posts-grid,
   .posts-grid--lifestyle { grid-template-columns: 1fr; }
   .featured-grid {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 280px 220px;
+    grid-template-columns: 1fr;
   }
   .newsletter-form { flex-direction: column; }
   .newsletter-input {
