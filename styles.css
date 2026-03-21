@@ -650,7 +650,7 @@ ul, ol { list-style: none; }
 .post--mosaic .post-image {
   position: relative;
   background-size: cover;
-  background-position: center;
+  background-position: center center;
   overflow: hidden;
 }
 .post--mosaic-large  .post-image { height: 380px; }

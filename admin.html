@@ -461,6 +461,7 @@
             '<button class="toolbar-btn" data-cmd="blockquote" title="Blockquote">"</button>' +
             '<button class="toolbar-btn" data-cmd="link" title="Insert Link">Link</button>' +
             '<button class="toolbar-btn" data-cmd="image" title="Insert Image">Img</button>' +
+            '<button class="toolbar-btn" data-cmd="image-upload" title="Upload Image">⬆ Img</button>' +
             '<span class="toolbar-sep"></span>' +
             '<button class="toolbar-btn" data-cmd="insertHorizontalRule" title="Horizontal Rule">—</button>' +
             '<button class="toolbar-btn" data-cmd="removeFormat" title="Clear Formatting">Tx</button>' +
@@ -468,6 +469,7 @@
           '<div class="editor-body" id="editor-body" contenteditable="true" spellcheck="true">' +
             bodyHtml +
           '</div>' +
+          '<input type="file" id="body-img-input" accept="image/*" style="display:none;" />' +
         '</div>' +
         '<div class="editor-sidebar" id="editor-sidebar">' +
 
@@ -720,12 +722,50 @@
         }
         break;
       case 'image':
-        var imgUrl = prompt('Image URL or path (e.g. assets/img/photo.jpg):');
+        var imgUrl = prompt('Paste image URL:');
         if (imgUrl) {
-          var imgAlt = prompt('Alt text:') || '';
           document.execCommand('insertHTML', false,
-            '<img src="' + imgUrl + '" alt="' + imgAlt + '" style="max-width:100%">');
+            '<img src="' + imgUrl + '" alt="" style="max-width:100%;height:auto;display:block;margin:1rem 0;">');
         }
+        break;
+      case 'image-upload':
+        // Save cursor position then trigger file picker
+        var savedRange = null;
+        var sel = window.getSelection();
+        if (sel && sel.rangeCount) savedRange = sel.getRangeAt(0).cloneRange();
+        var bodyImgInput = document.getElementById('body-img-input');
+        bodyImgInput.onchange = async function () {
+          var file = bodyImgInput.files[0];
+          if (!file) return;
+          bodyImgInput.value = '';
+          showToast('Uploading image…');
+          try {
+            var ext  = file.name.split('.').pop();
+            var path = 'posts/' + BlogCMS.uid() + '.' + ext;
+            var { error } = await BlogCMS.db.storage
+              .from('post-images')
+              .upload(path, file, { upsert: false, contentType: file.type });
+            if (error) throw error;
+            var { data: urlData } = BlogCMS.db.storage
+              .from('post-images')
+              .getPublicUrl(path);
+            var publicUrl = urlData.publicUrl;
+            // Restore cursor and insert
+            var editorBody = document.getElementById('editor-body');
+            editorBody.focus();
+            if (savedRange) {
+              var s = window.getSelection();
+              s.removeAllRanges();
+              s.addRange(savedRange);
+            }
+            document.execCommand('insertHTML', false,
+              '<img src="' + publicUrl + '" alt="" style="max-width:100%;height:auto;display:block;margin:1rem 0;">');
+            showToast('Image inserted ✓', 'gold');
+          } catch (err) {
+            showToast('Upload failed: ' + err.message);
+          }
+        };
+        bodyImgInput.click();
         break;
       default:
         document.execCommand(cmd, false, null);
