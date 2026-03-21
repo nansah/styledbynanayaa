@@ -485,7 +485,7 @@
               '<button class="btn-admin btn-admin--primary" onclick="savePost(\'draft\')">Save Draft</button>' +
               '<button class="btn-admin btn-admin--gold" onclick="savePost(\'published\')">Publish</button>' +
             '</div>' +
-            (post ? '<a href="/blog/post?slug=' + post.slug + '" target="_blank" class="btn-admin" style="width:100%;justify-content:center;text-decoration:none;margin-bottom:0.5rem;">Preview ↗</a>' : '') +
+            (post ? '<button class="btn-admin" onclick="previewPost()" style="width:100%;justify-content:center;margin-bottom:0.5rem;">Preview ↗</button>' : '') +
             (post ? '<button class="btn-admin btn-admin--danger" onclick="confirmDelete(\'' + post.id + '\')" style="width:100%;justify-content:center;">Delete Post</button>' : '') +
           '</div>' +
 
@@ -737,6 +737,39 @@
     } catch (err) {
       showToast('Save failed: ' + err.message);
     }
+  };
+
+  window.previewPost = function () {
+    var title      = document.getElementById('editor-title').value.trim();
+    var slug       = document.getElementById('field-slug').value.trim() || BlogCMS.slugify(title);
+    var category   = document.getElementById('field-category').value;
+    var coverImage = document.getElementById('field-cover').value.trim();
+    var coverAlt   = document.getElementById('field-cover-alt').value.trim();
+    var excerpt    = document.getElementById('field-excerpt').value.trim();
+    var body       = document.getElementById('editor-body').innerHTML;
+    var seoTitle   = document.getElementById('field-seo-title').value.trim();
+    var seoDesc    = document.getElementById('field-seo-desc').value.trim();
+    var tags       = document.getElementById('field-tags').value
+                       .split(',').map(function (t) { return t.trim(); }).filter(Boolean);
+
+    var previewData = {
+      id:          currentPostId || BlogCMS.uid(),
+      slug:        slug,
+      title:       title,
+      category:    category,
+      status:      'preview',
+      publishedAt: new Date().toISOString(),
+      coverImage:  coverImage,
+      coverAlt:    coverAlt,
+      excerpt:     excerpt,
+      body:        body,
+      seoTitle:    seoTitle,
+      seoDesc:     seoDesc,
+      tags:        tags,
+    };
+
+    sessionStorage.setItem('nya-preview-post', JSON.stringify(previewData));
+    window.open('/blog/post?slug=' + encodeURIComponent(slug) + '&preview=1', '_blank');
   };
 
   /* ─── Faves List ──────────────────────────────────────── */

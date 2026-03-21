@@ -146,10 +146,25 @@
   (async function () {
     var params = new URLSearchParams(location.search);
     var slug   = params.get('slug');
-    var post   = slug ? await BlogCMS.getPost(slug) : null;
+    var isPreview = params.get('preview') === '1';
+    var post;
+
+    /* ── Preview mode: read from sessionStorage ──────── */
+    if (isPreview) {
+      var stored = sessionStorage.getItem('nya-preview-post');
+      if (stored) {
+        sessionStorage.removeItem('nya-preview-post');
+        post = JSON.parse(stored);
+      }
+    }
+
+    /* ── Normal mode: fetch from Supabase ────────────── */
+    if (!post) {
+      post = slug ? await BlogCMS.getPost(slug) : null;
+    }
 
     /* ── 404 ─────────────────────────────────────────── */
-    if (!post || post.status !== 'published') {
+    if (!post || (!isPreview && post.status !== 'published')) {
       document.getElementById('post-article').style.display  = 'none';
       document.getElementById('post-related').style.display  = 'none';
       document.getElementById('post-not-found').style.display = 'block';

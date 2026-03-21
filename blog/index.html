@@ -156,7 +156,10 @@
         }
         grid.innerHTML = '';
         posts.forEach(function (post) {
-          var imgStyle = post.coverImage ? 'background-image:url(../'+post.coverImage+');' : '';
+          var imgSrc = post.coverImage
+            ? (post.coverImage.startsWith('http') ? post.coverImage : '../' + post.coverImage)
+            : '';
+          var imgStyle = imgSrc ? 'background-image:url(' + imgSrc + ');' : '';
           var card = document.createElement('article');
           card.className = 'post-card';
           card.innerHTML =
