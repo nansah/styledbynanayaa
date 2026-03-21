@@ -431,7 +431,7 @@
     var slugVal      = post ? escAttr(post.slug)       : '';
     var statusVal    = post ? post.status              : 'draft';
     var dateVal      = post && post.publishedAt
-                         ? new Date(post.publishedAt).toISOString().slice(0, 10)
+                         ? new Date(post.publishedAt).toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
                          : '';
     var catVal       = post ? post.category            : 'fashion';
     var tagsVal      = post ? escAttr((post.tags || []).join(', ')) : '';
@@ -817,7 +817,8 @@
     // dateField is YYYY-MM-DD; append T12:00:00Z so it's noon UTC (no timezone shifting)
     var resolvedDate;
     if (dateField) {
-      resolvedDate = dateField + 'T12:00:00.000Z';
+      // Noon EST = 17:00 UTC (accounts for EST UTC-5)
+      resolvedDate = dateField + 'T17:00:00.000Z';
     } else if (status === 'published' && (!existing || existing.status !== 'published')) {
       resolvedDate = now;
     } else {
