@@ -367,25 +367,20 @@
   /* ─── Posts List ──────────────────────────────────────── */
   async function renderPostsList(category) {
     adminContent.innerHTML = '<p style="padding:2rem;color:#888">Loading…</p>';
-    var posts = await BlogCMS.getPosts();
+    var allPosts = await BlogCMS.getPosts();
     if (category) {
-      posts = posts.filter(function (p) { return p.category === category; });
+      allPosts = allPosts.filter(function (p) { return p.category === category; });
     }
-    posts.sort(function (a, b) {
+    allPosts.sort(function (a, b) {
       return new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0);
     });
 
-    var html = '<div class="admin-card">';
-    if (!posts.length) {
-      html += '<p style="color:#888;font-size:0.85rem;padding:1rem 0;">No posts found. ' +
-        '<button class="btn-admin btn-admin--gold" onclick="showView(\'editor-new\')" style="margin-left:0.5rem;">Create a post</button></p>';
-    } else {
-      html += '<table class="posts-table">' +
-        '<thead><tr>' +
-          '<th>Title</th><th>Category</th><th>Status</th><th>Date</th><th>Actions</th>' +
-        '</tr></thead><tbody>';
-      posts.forEach(function (p) {
-        html += '<tr>' +
+    function renderRows(posts) {
+      if (!posts.length) {
+        return '<tr><td colspan="5" style="padding:1.5rem;color:#888;text-align:center;">No posts match your search.</td></tr>';
+      }
+      return posts.map(function (p) {
+        return '<tr>' +
           '<td class="post-title-cell">' + escHtml(p.title) + '</td>' +
           '<td><span class="post-cat-badge">' + p.category + '</span></td>' +
           '<td><span class="post-status-badge post-status-badge--' + p.status + '">' + p.status + '</span></td>' +
@@ -395,11 +390,47 @@
             '<button class="btn-admin btn-admin--sm btn-admin--danger" onclick="confirmDelete(\'' + p.id + '\')">Delete</button>' +
           '</td>' +
         '</tr>';
-      });
-      html += '</tbody></table>';
+      }).join('');
     }
+
+    var html = '<div class="admin-card">';
+
+    if (!allPosts.length) {
+      html += '<p style="color:#888;font-size:0.85rem;padding:1rem 0;">No posts found. ' +
+        '<button class="btn-admin btn-admin--gold" onclick="showView(\'editor-new\')" style="margin-left:0.5rem;">Create a post</button></p>';
+    } else {
+      html +=
+        '<div style="margin-bottom:1rem;">' +
+          '<input type="text" id="posts-search" class="field-input" placeholder="Search by title, category, or status…" ' +
+            'style="max-width:420px;" autocomplete="off" />' +
+        '</div>' +
+        '<table class="posts-table">' +
+          '<thead><tr>' +
+            '<th>Title</th><th>Category</th><th>Status</th><th>Date</th><th>Actions</th>' +
+          '</tr></thead>' +
+          '<tbody id="posts-tbody">' + renderRows(allPosts) + '</tbody>' +
+        '</table>';
+    }
+
     html += '</div>';
     adminContent.innerHTML = html;
+
+    var searchInput = document.getElementById('posts-search');
+    if (searchInput) {
+      searchInput.addEventListener('input', function () {
+        var q = searchInput.value.toLowerCase().trim();
+        var filtered = q
+          ? allPosts.filter(function (p) {
+              return p.title.toLowerCase().includes(q) ||
+                     p.category.toLowerCase().includes(q) ||
+                     p.status.toLowerCase().includes(q) ||
+                     (p.excerpt || '').toLowerCase().includes(q);
+            })
+          : allPosts;
+        document.getElementById('posts-tbody').innerHTML = renderRows(filtered);
+      });
+      searchInput.focus();
+    }
   }
 
   window.confirmDelete = function (id, type) {
