@@ -263,6 +263,12 @@
         slugLocked    = false;
         await renderEditor(null);
         break;
+      case 'editor-edit':
+        topbarTitle.textContent = 'Edit Post';
+        topbarActions.innerHTML = '';
+        slugLocked = true;
+        await renderEditor(data);
+        break;
       case 'posts-all':
         topbarTitle.textContent = 'All Posts';
         topbarActions.innerHTML = '<button class="btn-admin btn-admin--gold" onclick="showView(\'editor-new\')">+ New Post</button>';
@@ -479,6 +485,7 @@
               '<button class="btn-admin btn-admin--primary" onclick="savePost(\'draft\')">Save Draft</button>' +
               '<button class="btn-admin btn-admin--gold" onclick="savePost(\'published\')">Publish</button>' +
             '</div>' +
+            (post ? '<a href="/blog/post?slug=' + post.slug + '" target="_blank" class="btn-admin" style="width:100%;justify-content:center;text-decoration:none;margin-bottom:0.5rem;">Preview ↗</a>' : '') +
             (post ? '<button class="btn-admin btn-admin--danger" onclick="confirmDelete(\'' + post.id + '\')" style="width:100%;justify-content:center;">Delete Post</button>' : '') +
           '</div>' +
 
