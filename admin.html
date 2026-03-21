@@ -387,6 +387,7 @@
           '<td>' + BlogCMS.formatDate(p.publishedAt) + '</td>' +
           '<td class="table-actions">' +
             '<button class="btn-admin btn-admin--sm" onclick="showView(\'editor-edit\', \'' + p.id + '\')">Edit</button>' +
+            (p.status === 'published' ? '<a class="btn-admin btn-admin--sm" href="/blog/' + p.category + '/post?slug=' + encodeURIComponent(p.slug) + '" target="_blank" style="text-decoration:none;">View ↗</a>' : '') +
             '<button class="btn-admin btn-admin--sm btn-admin--danger" onclick="confirmDelete(\'' + p.id + '\')">Delete</button>' +
           '</td>' +
         '</tr>';
@@ -527,7 +528,10 @@
               '<button class="btn-admin btn-admin--primary" onclick="savePost(\'draft\')">Save Draft</button>' +
               '<button class="btn-admin btn-admin--gold" onclick="savePost(\'published\')">Publish</button>' +
             '</div>' +
-            (post ? '<button class="btn-admin" onclick="previewPost()" style="width:100%;justify-content:center;margin-bottom:0.5rem;">Preview ↗</button>' : '') +
+            '<button class="btn-admin" onclick="previewPost()" style="width:100%;justify-content:center;margin-bottom:0.5rem;">Preview ↗</button>' +
+            '<div id="view-post-wrap" style="margin-bottom:0.5rem;display:none;">' +
+              '<a id="view-post-link" href="#" target="_blank" class="btn-admin btn-admin--gold" style="width:100%;justify-content:center;text-decoration:none;">View Live Post ↗</a>' +
+            '</div>' +
             (post ? '<button class="btn-admin btn-admin--danger" onclick="confirmDelete(\'' + post.id + '\')" style="width:100%;justify-content:center;">Delete Post</button>' : '') +
           '</div>' +
 
@@ -603,6 +607,16 @@
       '</div>'; /* end editor-layout */
 
     adminContent.innerHTML = html;
+
+    // If editing a published post, show "View Live" immediately
+    if (post && post.status === 'published') {
+      var viewWrap = document.getElementById('view-post-wrap');
+      var viewLink = document.getElementById('view-post-link');
+      if (viewWrap && viewLink) {
+        viewLink.href = '/blog/' + post.category + '/post?slug=' + encodeURIComponent(post.slug);
+        viewWrap.style.display = 'block';
+      }
+    }
 
     /* ── Bind editor events ─── */
     var titleInput = document.getElementById('editor-title');
@@ -880,7 +894,7 @@
       var saved = await BlogCMS.save(post);
       currentPostId = saved.id;
       slugLocked    = true;
-      var displayDate = new Date(resolvedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      var displayDate = new Date(resolvedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'America/New_York' });
       var toastMsg = finalStatus === 'scheduled'
         ? 'Scheduled for ' + displayDate + ' ⏰'
         : finalStatus === 'published'
@@ -888,6 +902,14 @@
           : 'Draft saved.';
       showToast(toastMsg, finalStatus === 'published' ? 'gold' : '');
       document.getElementById('field-status').value = finalStatus;
+
+      // Show "View Live Post" button with correct URL
+      var viewWrap = document.getElementById('view-post-wrap');
+      var viewLink = document.getElementById('view-post-link');
+      if (viewWrap && viewLink && finalStatus === 'published') {
+        viewLink.href = '/blog/' + saved.category + '/post?slug=' + encodeURIComponent(saved.slug);
+        viewWrap.style.display = 'block';
+      }
     } catch (err) {
       showToast('Save failed: ' + err.message);
     }
