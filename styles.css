@@ -633,15 +633,38 @@ ul, ol { list-style: none; }
   margin: 0 auto;
   position: relative;
 }
+/* ── The Edit — 4-post mosaic ────────────────────────────────────── */
 .featured-grid {
   display: grid;
-  grid-template-columns: 1fr 400px;
+  grid-template-columns: 1.35fr 1fr;
   grid-template-rows: auto;
-  gap: 2px;
+  gap: 3px;
 }
+/* Left: big hero stacked (image + text) */
 .post--hero {
   display: grid;
-  grid-template-rows: 480px auto;
+  grid-template-rows: 520px auto;
+}
+/* Right column: 3 posts stacked */
+.post-sidebar {
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 3px;
+}
+/* Top-right: medium card */
+.post--side-top {
+  display: grid;
+  grid-template-rows: 300px auto;
+}
+/* Bottom-right: two small cards side-by-side */
+.post--side-bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+}
+.post--side-sm {
+  display: grid;
+  grid-template-rows: 200px auto;
 }
 .post-image {
   position: relative;
@@ -700,6 +723,12 @@ ul, ol { list-style: none; }
 .post--side .post-title {
   font-size: 1.15rem;
 }
+.post--side-sm .post-title {
+  font-size: 0.95rem;
+}
+.post--side-sm .post-excerpt {
+  display: none;
+}
 .post-excerpt {
   font-size: 0.875rem;
   color: var(--warm-gray);
@@ -719,11 +748,6 @@ ul, ol { list-style: none; }
 .post-link:hover { color: var(--gold-dark); }
 .post-link:hover span { transform: translateX(4px); }
 
-.post-sidebar {
-  display: grid;
-  grid-template-rows: 1fr 1fr;
-  gap: 2px;
-}
 .post--side {
   display: grid;
   grid-template-rows: auto 1fr;
@@ -2002,9 +2026,10 @@ cite {
   }
   .post--hero { grid-template-rows: 380px auto; }
   .post-sidebar {
-    grid-template-rows: 1fr;
-    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    grid-template-columns: 1fr;
   }
+  .post--side-top { grid-template-rows: 260px auto; }
   .post--side { grid-template-rows: 220px auto; }
   .hero-inner {
     gap: 2.5rem;
@@ -2072,6 +2097,10 @@ cite {
     grid-template-columns: 1fr;
     grid-template-rows: auto;
   }
+  .post--side-bottom-row {
+    grid-template-columns: 1fr;
+  }
+  .post--side-sm { grid-template-rows: 200px auto; }
   .newsletter-form { flex-direction: column; }
   .newsletter-input {
     border-right: 1px solid rgba(255,255,255,0.12);

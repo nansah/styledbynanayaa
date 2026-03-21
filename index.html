@@ -538,54 +538,54 @@
       return new Date(iso).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
     }
 
+    function imgBg(url, fallback) {
+      return url
+        ? 'background-image:url(' + url + ');background-size:cover;background-position:center;'
+        : fallback;
+    }
+
+    function postCard(p, cls, imgCls, titleTag) {
+      var bg = imgBg(p.coverImage, 'background:linear-gradient(135deg,#3a2a20 0%,#5a4030 100%);');
+      return (
+        '<article class="post ' + cls + '">' +
+          '<a href="/blog/post?slug=' + encodeURIComponent(p.slug) + '" class="post-image ' + imgCls + '" style="' + bg + '">' +
+            '<div class="post-image-overlay"></div>' +
+            '<div class="post-badge post-badge--warm">' + catCapital(p.category) + '</div>' +
+          '</a>' +
+          '<div class="post-body">' +
+            '<span class="post-date">' + formatDate(p.publishedAt) + '</span>' +
+            '<' + titleTag + ' class="post-title"><a href="/blog/post?slug=' + encodeURIComponent(p.slug) + '" style="color:inherit;text-decoration:none;">' + p.title + '</a></' + titleTag + '>' +
+            '<p class="post-excerpt">' + p.excerpt + '</p>' +
+            '<a href="/blog/post?slug=' + encodeURIComponent(p.slug) + '" class="post-link">Read More <span>→</span></a>' +
+          '</div>' +
+        '</article>'
+      );
+    }
+
     try {
       var posts = await BlogCMS.getPublished();
       if (!posts.length) return;
 
-      var hero = posts[0];
-      var sides = posts.slice(1, 3);
+      var p0 = posts[0];
+      var p1 = posts[1] || null;
+      var p2 = posts[2] || null;
+      var p3 = posts[3] || null;
 
-      // Hero post
-      var heroImgStyle = hero.coverImage
-        ? 'background-image:url(' + hero.coverImage + ');background-size:cover;background-position:center;'
-        : 'background:linear-gradient(135deg,#2c2825 0%,#4a3728 100%);';
+      // Hero (left, large)
+      var heroHtml = postCard(p0, 'post--hero', '', 'h2');
 
-      var heroHtml =
-        '<article class="post post--hero">' +
-          '<a href="/blog/post?slug=' + encodeURIComponent(hero.slug) + '" class="post-image" style="' + heroImgStyle + '">' +
-            '<div class="post-image-overlay"></div>' +
-            '<div class="post-badge">' + catCapital(hero.category) + '</div>' +
-          '</a>' +
-          '<div class="post-body">' +
-            '<span class="post-date">' + formatDate(hero.publishedAt) + '</span>' +
-            '<h2 class="post-title"><a href="/blog/post?slug=' + encodeURIComponent(hero.slug) + '" style="color:inherit;text-decoration:none;">' + hero.title + '</a></h2>' +
-            '<p class="post-excerpt">' + hero.excerpt + '</p>' +
-            '<a href="/blog/post?slug=' + encodeURIComponent(hero.slug) + '" class="post-link">Read More <span>→</span></a>' +
-          '</div>' +
-        '</article>';
+      // Right sidebar
+      var sidebarHtml = '<div class="post-sidebar">';
+      if (p1) sidebarHtml += postCard(p1, 'post--side post--side-top', '', 'h3');
+      if (p2 || p3) {
+        sidebarHtml += '<div class="post--side-bottom-row">';
+        if (p2) sidebarHtml += postCard(p2, 'post--side post--side-sm', '', 'h3');
+        if (p3) sidebarHtml += postCard(p3, 'post--side post--side-sm', '', 'h3');
+        sidebarHtml += '</div>';
+      }
+      sidebarHtml += '</div>';
 
-      // Side posts
-      var sidesHtml = '<div class="post-sidebar">';
-      sides.forEach(function (p) {
-        var imgStyle = p.coverImage
-          ? 'background-image:url(' + p.coverImage + ');background-size:cover;background-position:center;'
-          : 'background:linear-gradient(135deg,#3a2a20 0%,#5a4030 100%);';
-        sidesHtml +=
-          '<article class="post post--side">' +
-            '<a href="/blog/post?slug=' + encodeURIComponent(p.slug) + '" class="post-image post-image--small" style="' + imgStyle + '">' +
-              '<div class="post-badge post-badge--warm">' + catCapital(p.category) + '</div>' +
-            '</a>' +
-            '<div class="post-body">' +
-              '<span class="post-date">' + formatDate(p.publishedAt) + '</span>' +
-              '<h3 class="post-title"><a href="/blog/post?slug=' + encodeURIComponent(p.slug) + '" style="color:inherit;text-decoration:none;">' + p.title + '</a></h3>' +
-              '<p class="post-excerpt">' + p.excerpt + '</p>' +
-              '<a href="/blog/post?slug=' + encodeURIComponent(p.slug) + '" class="post-link">Read More <span>→</span></a>' +
-            '</div>' +
-          '</article>';
-      });
-      sidesHtml += '</div>';
-
-      grid.innerHTML = heroHtml + (sides.length ? sidesHtml : '');
+      grid.innerHTML = heroHtml + sidebarHtml;
     } catch (e) {
       // Fail silently — grid stays empty
     }
