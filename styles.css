@@ -1623,30 +1623,16 @@ cite {
 }
 .world-card:hover .world-card-filler { transform: scale(1.04); }
 .world-card-filler--fashion {
-  background:
-    radial-gradient(ellipse at 60% 20%, rgba(255,240,220,0.5) 0%, transparent 50%),
-    linear-gradient(160deg, #c8956a 0%, #8a5535 50%, #5c2a10 100%);
-}
-.world-card-filler--fashion::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    repeating-linear-gradient(
-      30deg,
-      transparent 0px, transparent 40px,
-      rgba(255,255,255,0.03) 40px, rgba(255,255,255,0.03) 41px
-    );
+  background-image: url('/assets/img/nanayaa_asos_cinchedwaistblazer.jpg');
+  background-position: center top;
 }
 .world-card-filler--faith {
-  background:
-    radial-gradient(ellipse at 40% 25%, rgba(255,245,230,0.45) 0%, transparent 55%),
-    linear-gradient(160deg, #c0a878 0%, #80704a 50%, #4a3820 100%);
+  background-image: url('https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=900&q=80');
+  background-position: center center;
 }
 .world-card-filler--lifestyle {
-  background:
-    radial-gradient(ellipse at 55% 15%, rgba(240,230,255,0.5) 0%, transparent 50%),
-    linear-gradient(160deg, #9880b0 0%, #5a4070 50%, #2a1840 100%);
+  background-image: url('https://images.unsplash.com/photo-1499092346302-b8d01c513b82?w=900&q=80');
+  background-position: center center;
 }
 
 /* Post images */
