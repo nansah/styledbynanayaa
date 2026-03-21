@@ -9,7 +9,7 @@ create table if not exists posts (
   slug         text unique not null,
   title        text not null,
   category     text not null check (category in ('fashion', 'faith', 'lifestyle')),
-  status       text not null default 'draft' check (status in ('published', 'draft')),
+  status       text not null default 'draft' check (status in ('published', 'draft', 'scheduled')),
   published_at timestamptz,
   cover_image  text,
   cover_alt    text,

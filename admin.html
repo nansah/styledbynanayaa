@@ -431,7 +431,7 @@
     var slugVal      = post ? escAttr(post.slug)       : '';
     var statusVal    = post ? post.status              : 'draft';
     var dateVal      = post && post.publishedAt
-                         ? new Date(post.publishedAt).toISOString().slice(0, 16)
+                         ? new Date(post.publishedAt).toISOString().slice(0, 10)
                          : '';
     var catVal       = post ? post.category            : 'fashion';
     var tagsVal      = post ? escAttr((post.tags || []).join(', ')) : '';
@@ -489,8 +489,8 @@
             '</div>' +
             '<div class="field-group">' +
               '<label class="field-label" for="field-publish-date">Publish Date</label>' +
-              '<input type="datetime-local" class="field-input" id="field-publish-date" value="' + dateVal + '" />' +
-              '<span style="font-size:0.68rem;color:var(--warm-gray);margin-top:0.25rem;display:block;">Leave blank to use today</span>' +
+              '<input type="date" class="field-input" id="field-publish-date" value="' + dateVal + '" />' +
+              '<span style="font-size:0.68rem;color:var(--warm-gray);margin-top:0.25rem;display:block;">Backdate or schedule. Leave blank = today.</span>' +
             '</div>' +
             '<div class="editor-actions">' +
               '<button class="btn-admin btn-admin--primary" onclick="savePost(\'draft\')">Save Draft</button>' +
@@ -814,9 +814,10 @@
     var now = new Date().toISOString();
 
     // Resolve publish date: use custom date if set, else auto
+    // dateField is YYYY-MM-DD; append T12:00:00Z so it's noon UTC (no timezone shifting)
     var resolvedDate;
     if (dateField) {
-      resolvedDate = new Date(dateField).toISOString();
+      resolvedDate = dateField + 'T12:00:00.000Z';
     } else if (status === 'published' && (!existing || existing.status !== 'published')) {
       resolvedDate = now;
     } else {
@@ -847,9 +848,12 @@
       var saved = await BlogCMS.save(post);
       currentPostId = saved.id;
       slugLocked    = true;
+      var displayDate = new Date(resolvedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
       var toastMsg = finalStatus === 'scheduled'
-        ? 'Scheduled for ' + new Date(resolvedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' ⏰'
-        : finalStatus === 'published' ? 'Post published!' : 'Draft saved.';
+        ? 'Scheduled for ' + displayDate + ' ⏰'
+        : finalStatus === 'published'
+          ? 'Published · ' + displayDate
+          : 'Draft saved.';
       showToast(toastMsg, finalStatus === 'published' ? 'gold' : '');
       document.getElementById('field-status').value = finalStatus;
     } catch (err) {
