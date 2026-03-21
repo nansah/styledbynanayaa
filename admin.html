@@ -54,6 +54,10 @@
       <button class="sidebar-link" data-view="posts-faith">Faith</button>
       <button class="sidebar-link" data-view="posts-lifestyle">Lifestyle</button>
 
+      <span class="sidebar-section-label">Shop Faves</span>
+      <button class="sidebar-link" data-view="faves-new">New Fave</button>
+      <button class="sidebar-link" data-view="faves-all">All Faves</button>
+
       <span class="sidebar-section-label">Settings</span>
       <button class="sidebar-link" data-view="export">Export Posts</button>
       <button class="sidebar-link" data-view="import">Import Posts</button>
@@ -107,11 +111,13 @@
   'use strict';
 
   /* ─── State ───────────────────────────────────────────── */
-  var currentView   = '';
-  var currentPostId = null;   // id of post being edited
+  var currentView    = '';
+  var currentPostId  = null;   // id of post being edited
+  var currentFaveId  = null;   // id of fave being edited
   var deleteTargetId = null;
-  var slugLocked    = false;
-  var fileInput     = null;   // hidden file input for import
+  var deleteTargetType = 'post'; // 'post' or 'fave'
+  var slugLocked     = false;
+  var fileInput      = null;   // hidden file input for import
 
   /* ─── DOM refs ────────────────────────────────────────── */
   var loginScreen  = document.getElementById('login-screen');
@@ -165,11 +171,19 @@
     document.getElementById('delete-confirm-btn').addEventListener('click', async function () {
       if (deleteTargetId) {
         try {
-          await BlogCMS.remove(deleteTargetId);
-          deleteModal.classList.remove('visible');
-          showToast('Post deleted.');
-          deleteTargetId = null;
-          await showView('posts-all');
+          if (deleteTargetType === 'fave') {
+            await BlogCMS.removeFave(deleteTargetId);
+            deleteModal.classList.remove('visible');
+            showToast('Item deleted.');
+            deleteTargetId = null;
+            await showView('faves-all');
+          } else {
+            await BlogCMS.remove(deleteTargetId);
+            deleteModal.classList.remove('visible');
+            showToast('Post deleted.');
+            deleteTargetId = null;
+            await showView('posts-all');
+          }
         } catch (err) {
           showToast('Delete failed: ' + err.message);
         }
@@ -269,6 +283,22 @@
         topbarActions.innerHTML = '<button class="btn-admin btn-admin--gold" onclick="showView(\'editor-new\')">+ New Post</button>';
         await renderPostsList('lifestyle');
         break;
+      case 'faves-all':
+        topbarTitle.textContent = 'Shop My Faves';
+        topbarActions.innerHTML = '<button class="btn-admin btn-admin--gold" onclick="showView(\'faves-new\')">+ New Fave</button>';
+        await renderFavesList();
+        break;
+      case 'faves-new':
+        topbarTitle.textContent = 'New Fave Item';
+        topbarActions.innerHTML = '';
+        currentFaveId = null;
+        await renderFaveEditor(null);
+        break;
+      case 'fave-edit':
+        topbarTitle.textContent = 'Edit Fave Item';
+        topbarActions.innerHTML = '';
+        await renderFaveEditor(data);
+        break;
       case 'export':
         topbarTitle.textContent = 'Export Posts';
         topbarActions.innerHTML = '';
@@ -366,8 +396,11 @@
     adminContent.innerHTML = html;
   }
 
-  window.confirmDelete = function (id) {
-    deleteTargetId = id;
+  window.confirmDelete = function (id, type) {
+    deleteTargetId   = id;
+    deleteTargetType = type || 'post';
+    document.querySelector('.delete-confirm-title').textContent =
+      deleteTargetType === 'fave' ? 'Delete Item' : 'Delete Post';
     deleteModal.classList.add('visible');
   };
 
@@ -694,6 +727,185 @@
       slugLocked    = true;
       showToast(status === 'published' ? 'Post published!' : 'Draft saved.', status === 'published' ? 'gold' : '');
       document.getElementById('field-status').value = status;
+    } catch (err) {
+      showToast('Save failed: ' + err.message);
+    }
+  };
+
+  /* ─── Faves List ──────────────────────────────────────── */
+  async function renderFavesList() {
+    adminContent.innerHTML = '<p style="padding:2rem;color:#888">Loading…</p>';
+    var faves = await BlogCMS.getFaves();
+
+    var html = '<div class="admin-card">';
+    if (!faves.length) {
+      html += '<p style="color:#888;font-size:0.85rem;padding:1rem 0;">No items yet. ' +
+        '<button class="btn-admin btn-admin--gold" onclick="showView(\'faves-new\')" style="margin-left:0.5rem;">Add your first item</button></p>';
+    } else {
+      html += '<table class="posts-table">' +
+        '<thead><tr>' +
+          '<th>Name</th><th>Brand</th><th>Category</th><th>Price</th><th>Status</th><th>Actions</th>' +
+        '</tr></thead><tbody>';
+      faves.forEach(function (f) {
+        html += '<tr>' +
+          '<td class="post-title-cell">' + escHtml(f.name) + (f.isFave ? ' <span class="post-cat-badge" style="background:var(--gold);color:#fff;">NYA Fave</span>' : '') + '</td>' +
+          '<td>' + escHtml(f.brand) + '</td>' +
+          '<td><span class="post-cat-badge">' + f.category + '</span></td>' +
+          '<td>' + escHtml(f.price) + '</td>' +
+          '<td><span class="post-status-badge post-status-badge--' + f.status + '">' + f.status + '</span></td>' +
+          '<td class="table-actions">' +
+            '<button class="btn-admin btn-admin--sm" onclick="showView(\'fave-edit\', \'' + f.id + '\')">Edit</button>' +
+            '<button class="btn-admin btn-admin--sm btn-admin--danger" onclick="confirmDelete(\'' + f.id + '\', \'fave\')">Delete</button>' +
+          '</td>' +
+        '</tr>';
+      });
+      html += '</tbody></table>';
+    }
+    html += '</div>';
+    adminContent.innerHTML = html;
+  }
+
+  /* ─── Fave Editor ─────────────────────────────────────── */
+  async function renderFaveEditor(faveId) {
+    currentFaveId = faveId;
+    var fave = null;
+    if (faveId) {
+      adminContent.innerHTML = '<p style="padding:2rem;color:#888">Loading…</p>';
+      var resp = await BlogCMS.db.from('faves').select('*').eq('id', faveId).maybeSingle();
+      if (resp.data) {
+        var d = resp.data;
+        fave = { id: d.id, name: d.name, brand: d.brand, category: d.category,
+          status: d.status, description: d.description || '', price: d.price || '',
+          affiliateUrl: d.affiliate_url || '', imageUrl: d.image_url || '',
+          isFave: d.is_fave || false, sortOrder: d.sort_order || 0 };
+      }
+    }
+
+    var nameVal   = fave ? escAttr(fave.name)        : '';
+    var brandVal  = fave ? escAttr(fave.brand)       : '';
+    var catVal    = fave ? fave.category              : 'fashion';
+    var statusVal = fave ? fave.status                : 'draft';
+    var descVal   = fave ? escAttr(fave.description) : '';
+    var priceVal  = fave ? escAttr(fave.price)       : '';
+    var urlVal    = fave ? escAttr(fave.affiliateUrl): '';
+    var imgVal    = fave ? escAttr(fave.imageUrl)    : '';
+    var isFaveChk = fave && fave.isFave ? ' checked' : '';
+    var sortVal   = fave ? fave.sortOrder             : 0;
+    var imgPreviewStyle = (fave && fave.imageUrl) ? ' class="cover-preview visible"' : ' class="cover-preview"';
+    var imgPreviewSrc   = (fave && fave.imageUrl) ? escAttr(fave.imageUrl) : '';
+
+    var html =
+      '<div class="editor-titlebar">' +
+        '<input type="text" class="editor-title-input" id="fave-name" placeholder="Product name…" value="' + nameVal + '" />' +
+      '</div>' +
+      '<div class="editor-layout">' +
+        '<div class="editor-left">' +
+          '<div class="editor-sidebar-panel" style="margin-bottom:1rem;">' +
+            '<span class="panel-title">Description</span>' +
+            '<textarea class="field-textarea" id="fave-desc" rows="6" placeholder="Write about this product — why you love it, how you use it…" style="min-height:160px;">' + descVal + '</textarea>' +
+          '</div>' +
+        '</div>' +
+        '<div class="editor-sidebar" id="fave-sidebar">' +
+          '<div class="editor-sidebar-panel">' +
+            '<span class="panel-title">Publish</span>' +
+            '<div class="field-group">' +
+              '<label class="field-label">Status</label>' +
+              '<select class="field-select" id="fave-status">' +
+                '<option value="draft"'     + (statusVal === 'draft'     ? ' selected' : '') + '>Draft</option>' +
+                '<option value="published"' + (statusVal === 'published' ? ' selected' : '') + '>Published</option>' +
+              '</select>' +
+            '</div>' +
+            '<div class="editor-actions">' +
+              '<button class="btn-admin btn-admin--primary" onclick="saveFaveItem(\'draft\')">Save Draft</button>' +
+              '<button class="btn-admin btn-admin--gold" onclick="saveFaveItem(\'published\')">Publish</button>' +
+            '</div>' +
+            (fave ? '<button class="btn-admin btn-admin--danger" onclick="confirmDelete(\'' + fave.id + '\', \'fave\')" style="width:100%;justify-content:center;margin-top:0.5rem;">Delete Item</button>' : '') +
+          '</div>' +
+          '<div class="editor-sidebar-panel">' +
+            '<span class="panel-title">Item Details</span>' +
+            '<div class="field-group">' +
+              '<label class="field-label" for="fave-brand">Brand</label>' +
+              '<input type="text" class="field-input" id="fave-brand" value="' + brandVal + '" placeholder="e.g. Charlotte Tilbury" />' +
+            '</div>' +
+            '<div class="field-group">' +
+              '<label class="field-label" for="fave-category">Category</label>' +
+              '<select class="field-select" id="fave-category">' +
+                '<option value="fashion"'  + (catVal === 'fashion'  ? ' selected' : '') + '>Fashion</option>' +
+                '<option value="beauty"'   + (catVal === 'beauty'   ? ' selected' : '') + '>Beauty</option>' +
+                '<option value="home"'     + (catVal === 'home'     ? ' selected' : '') + '>Home</option>' +
+                '<option value="wellness"' + (catVal === 'wellness' ? ' selected' : '') + '>Wellness</option>' +
+                '<option value="faith"'    + (catVal === 'faith'    ? ' selected' : '') + '>Faith &amp; Books</option>' +
+              '</select>' +
+            '</div>' +
+            '<div class="field-group">' +
+              '<label class="field-label" for="fave-price">Price (display)</label>' +
+              '<input type="text" class="field-input" id="fave-price" value="' + priceVal + '" placeholder="e.g. $105" />' +
+            '</div>' +
+            '<div class="field-group">' +
+              '<label class="field-label" for="fave-sort">Sort Order (lower = first)</label>' +
+              '<input type="number" class="field-input" id="fave-sort" value="' + sortVal + '" min="0" />' +
+            '</div>' +
+            '<div class="field-group" style="display:flex;align-items:center;gap:0.6rem;">' +
+              '<input type="checkbox" id="fave-is-fave"' + isFaveChk + ' style="width:auto;margin:0;" />' +
+              '<label class="field-label" for="fave-is-fave" style="margin:0;">Mark as "NYA Fave" (gold badge)</label>' +
+            '</div>' +
+          '</div>' +
+          '<div class="editor-sidebar-panel">' +
+            '<span class="panel-title">Affiliate Link</span>' +
+            '<div class="field-group">' +
+              '<label class="field-label" for="fave-url">Affiliate URL</label>' +
+              '<input type="url" class="field-input" id="fave-url" value="' + urlVal + '" placeholder="https://…" />' +
+            '</div>' +
+          '</div>' +
+          '<div class="editor-sidebar-panel">' +
+            '<span class="panel-title">Product Image</span>' +
+            '<div class="field-group">' +
+              '<label class="field-label" for="fave-img">Image URL</label>' +
+              '<input type="text" class="field-input" id="fave-img" value="' + imgVal + '" placeholder="https://… or assets/img/…" />' +
+            '</div>' +
+            '<img id="fave-img-preview" src="' + imgPreviewSrc + '" alt="Image preview"' + imgPreviewStyle + ' />' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+    adminContent.innerHTML = html;
+
+    var imgInput   = document.getElementById('fave-img');
+    var imgPreview = document.getElementById('fave-img-preview');
+    imgInput.addEventListener('input', function () {
+      var v = imgInput.value.trim();
+      if (v) { imgPreview.src = v; imgPreview.classList.add('visible'); }
+      else   { imgPreview.src = ''; imgPreview.classList.remove('visible'); }
+    });
+  }
+
+  /* ─── Save Fave ────────────────────────────────────────── */
+  window.saveFaveItem = async function (forceStatus) {
+    var name = document.getElementById('fave-name').value.trim();
+    if (!name) {
+      showToast('Please add a product name.');
+      document.getElementById('fave-name').focus();
+      return;
+    }
+    var fave = {
+      id:          currentFaveId || BlogCMS.uid(),
+      name:        name,
+      brand:       document.getElementById('fave-brand').value.trim(),
+      category:    document.getElementById('fave-category').value,
+      status:      forceStatus || document.getElementById('fave-status').value,
+      description: document.getElementById('fave-desc').value.trim(),
+      price:       document.getElementById('fave-price').value.trim(),
+      affiliateUrl:document.getElementById('fave-url').value.trim(),
+      imageUrl:    document.getElementById('fave-img').value.trim(),
+      isFave:      document.getElementById('fave-is-fave').checked,
+      sortOrder:   parseInt(document.getElementById('fave-sort').value) || 0,
+    };
+    try {
+      var saved = await BlogCMS.saveFave(fave);
+      currentFaveId = saved.id;
+      var st = fave.status;
+      showToast(st === 'published' ? 'Item published!' : 'Draft saved.', st === 'published' ? 'gold' : '');
+      document.getElementById('fave-status').value = st;
     } catch (err) {
       showToast('Save failed: ' + err.message);
     }

@@ -4,5 +4,5 @@
 //  Find them in: Supabase Dashboard → Project Settings → API
 // ─────────────────────────────────────────────────────────────────
 
-const SUPABASE_URL     = 'https://YOUR_PROJECT_ID.supabase.co';
-const SUPABASE_ANON_KEY = 'YOUR_ANON_PUBLIC_KEY';
+const SUPABASE_URL     = 'https://puflldqatenrfglcclkf.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_J6ipKvtl9wYoDT0NqmndMQ_8pK_r3Ut';

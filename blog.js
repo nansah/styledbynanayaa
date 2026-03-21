@@ -96,6 +96,74 @@ const BlogCMS = (() => {
     if (error) throw error;
   }
 
+  /* ── Faves row mappers ────────────────────────────────────────── */
+
+  function fromFaveRow(row) {
+    return {
+      id:           row.id,
+      name:         row.name,
+      brand:        row.brand,
+      category:     row.category,
+      status:       row.status,
+      description:  row.description  || '',
+      price:        row.price        || '',
+      affiliateUrl: row.affiliate_url || '',
+      imageUrl:     row.image_url    || '',
+      isFave:       row.is_fave      || false,
+      sortOrder:    row.sort_order   || 0,
+    };
+  }
+
+  function toFaveRow(fave) {
+    return {
+      id:            fave.id,
+      name:          fave.name,
+      brand:         fave.brand,
+      category:      fave.category,
+      status:        fave.status,
+      description:   fave.description  || null,
+      price:         fave.price        || null,
+      affiliate_url: fave.affiliateUrl || null,
+      image_url:     fave.imageUrl     || null,
+      is_fave:       fave.isFave       || false,
+      sort_order:    fave.sortOrder    || 0,
+    };
+  }
+
+  /* ── Faves CRUD ───────────────────────────────────────────────── */
+
+  async function getFaves(category) {
+    let q = db.from('faves').select('*').order('sort_order', { ascending: true });
+    if (category) q = q.eq('category', category);
+    const { data, error } = await q;
+    if (error) throw error;
+    return (data || []).map(fromFaveRow);
+  }
+
+  async function getPublishedFaves(category) {
+    let q = db.from('faves').select('*').eq('status', 'published').order('sort_order', { ascending: true });
+    if (category) q = q.eq('category', category);
+    const { data, error } = await q;
+    if (error) throw error;
+    return (data || []).map(fromFaveRow);
+  }
+
+  async function saveFave(fave) {
+    const row = toFaveRow(fave);
+    const { data, error } = await db
+      .from('faves')
+      .upsert(row, { onConflict: 'id' })
+      .select()
+      .single();
+    if (error) throw error;
+    return fromFaveRow(data);
+  }
+
+  async function removeFave(id) {
+    const { error } = await db.from('faves').delete().eq('id', id);
+    if (error) throw error;
+  }
+
   /* ── Auth (Supabase email/password) ──────────────────────────── */
 
   async function login(email, password) {
@@ -164,6 +232,7 @@ const BlogCMS = (() => {
   return {
     db,
     getPosts, getPublished, getPost, save, remove,
+    getFaves, getPublishedFaves, saveFave, removeFave,
     login, logout, getSession, onAuthChange,
     slugify, uid, formatDate,
     exportPosts, importPosts,
