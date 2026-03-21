@@ -801,6 +801,7 @@
             body.querySelectorAll('a:not([target])').forEach(function (a) {
               a.target = '_blank'; a.rel = 'noopener';
             });
+            showToast('Link added ✓', 'gold');
           }
           linkInput.removeEventListener('keydown', onLinkKey);
           document.getElementById('link-apply-btn').removeEventListener('mousedown', applyLink);

@@ -626,6 +626,12 @@ body.admin-body {
   margin-bottom: 0.75rem;
 }
 
+.editor-body a {
+  color: #c4955a;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 /* ── Editor Sidebar ──────────────────────────────────────── */
 
 .editor-sidebar-panel {
