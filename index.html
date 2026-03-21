@@ -505,9 +505,11 @@
       <p class="newsletter-desc">
         Weekly dispatches on style, spirit, and the New York life — delivered straight to your inbox with love.
       </p>
-      <form class="newsletter-form" onsubmit="handleSubscribe(event)">
+      <form class="newsletter-form" action="https://www.beehiiv.com/subscribe/pub_aa3bdb72-d59f-46b0-8159-280056963543" method="POST">
+        <input type="hidden" name="redirect_to" value="https://styledbynanayaa.com/?subscribed=true" />
         <input
           type="email"
+          name="email"
           placeholder="Your email address"
           class="newsletter-input"
           required

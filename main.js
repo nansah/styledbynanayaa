@@ -52,29 +52,15 @@ const observer = new IntersectionObserver((entries) => {
 revealElements.forEach(el => observer.observe(el));
 
 /* ── Newsletter Subscribe ────────────────────────────────────────── */
-function handleSubscribe(e) {
-  e.preventDefault();
-  const form = e.target;
-  const input = form.querySelector('input[type="email"]');
-  const btn = form.querySelector('button');
-  const email = input.value.trim();
-
-  if (!email) return;
-
-  // UI feedback
-  btn.textContent = 'Subscribed ✓';
-  btn.style.background = '#7a9a5a';
-  input.value = '';
-  input.disabled = true;
-  btn.disabled = true;
-
-  // Reset after 4 seconds
-  setTimeout(() => {
-    btn.textContent = 'Subscribe';
-    btn.style.background = '';
-    input.disabled = false;
-    btn.disabled = false;
-  }, 4000);
+// Show success message if redirected back from Beehiiv after subscribing
+if (new URLSearchParams(location.search).get('subscribed') === 'true') {
+  window.addEventListener('DOMContentLoaded', function () {
+    var form = document.querySelector('.newsletter-form');
+    if (form) {
+      form.innerHTML = '<p style="font-family:var(--font-serif);font-size:1.2rem;font-weight:300;color:var(--gold-light);letter-spacing:0.04em;">You\'re in. ✦ Welcome to the circle.</p>';
+    }
+    history.replaceState(null, '', location.pathname);
+  });
 }
 
 /* ── Smooth Active Nav Highlight ─────────────────────────────────── */
