@@ -633,124 +633,94 @@ ul, ol { list-style: none; }
   margin: 0 auto;
   position: relative;
 }
-/* ── The Edit — 4-post mosaic ────────────────────────────────────── */
+/* ── The Edit — 4-post image mosaic ─────────────────────────────── */
 .featured-grid {
   display: grid;
-  grid-template-columns: 1.35fr 1fr;
-  grid-template-rows: auto;
-  gap: 3px;
+  grid-template-columns: 1.25fr 1fr;
+  grid-template-rows: 460px 320px;
+  gap: 4px;
 }
-/* Left: big hero stacked (image + text) */
-.post--hero {
-  display: grid;
-  grid-template-rows: 520px auto;
-}
-/* Right column: 3 posts stacked */
-.post-sidebar {
-  display: grid;
-  grid-template-rows: auto auto;
-  gap: 3px;
-}
-/* Top-right: medium card */
-.post--side-top {
-  display: grid;
-  grid-template-rows: 300px auto;
-}
-/* Bottom-right: two small cards side-by-side */
-.post--side-bottom-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3px;
-}
-.post--side-sm {
-  display: grid;
-  grid-template-rows: 200px auto;
-}
-.post-image {
+
+/* Each mosaic card is a full-bleed image with overlaid text */
+.mosaic-card {
   position: relative;
-  background-size: cover;
-  background-position: center;
   overflow: hidden;
+  background: var(--charcoal);
+  display: block;
+  text-decoration: none;
 }
-.post-image-overlay {
+.mosaic-card__img {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(44,40,37,0.25) 0%, transparent 60%);
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.55s cubic-bezier(0.25,0.46,0.45,0.94);
 }
-.post-image--small {
-  height: 240px;
-  position: relative;
-  overflow: hidden;
+.mosaic-card:hover .mosaic-card__img {
+  transform: scale(1.05);
 }
-.post-badge {
+.mosaic-card__overlay {
   position: absolute;
-  top: 1.25rem; left: 1.25rem;
-  font-size: 0.6rem;
+  inset: 0;
+  background: linear-gradient(to top,
+    rgba(18,13,10,0.78) 0%,
+    rgba(18,13,10,0.18) 55%,
+    transparent 100%);
+}
+.mosaic-card__body {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 1.75rem;
+}
+.mosaic-card__category {
+  display: inline-block;
+  font-family: var(--font-sans);
+  font-size: 0.58rem;
   font-weight: 400;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--charcoal);
-  border: 1px solid rgba(44,40,37,0.35);
-  padding: 0.35rem 0.75rem;
-  background: rgba(255,255,255,0.55);
-  backdrop-filter: blur(6px);
+  color: var(--gold-light);
+  margin-bottom: 0.6rem;
 }
-.post-badge--warm {
-  color: var(--gold-dark);
-  border-color: rgba(196,149,90,0.5);
-  background: rgba(255,255,255,0.7);
-}
-.post-body {
-  padding: 2rem;
-  background: var(--white);
-}
-.post-date {
-  display: block;
-  font-size: 0.65rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 0.75rem;
-}
-.post-title {
+.mosaic-card__title {
   font-family: var(--font-serif);
-  font-size: 1.6rem;
-  font-weight: 400;
-  line-height: 1.25;
-  margin-bottom: 0.75rem;
-  color: var(--charcoal);
+  font-weight: 300;
+  line-height: 1.22;
+  color: var(--white);
+  margin: 0 0 0.65rem;
 }
-.post--side .post-title {
-  font-size: 1.15rem;
+.mosaic-card--large .mosaic-card__title  { font-size: 1.75rem; }
+.mosaic-card--medium .mosaic-card__title { font-size: 1.3rem; }
+.mosaic-card--small .mosaic-card__title  { font-size: 1.05rem; }
+
+.mosaic-card__excerpt {
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 300;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.65;
+  margin-bottom: 0.9rem;
 }
-.post--side-sm .post-title {
-  font-size: 0.95rem;
-}
-.post--side-sm .post-excerpt {
-  display: none;
-}
-.post-excerpt {
-  font-size: 0.875rem;
-  color: var(--warm-gray);
-  line-height: 1.75;
-  margin-bottom: 1.25rem;
-}
-.post-link {
-  font-size: 0.72rem;
+.mosaic-card--small .mosaic-card__excerpt { display: none; }
+
+.mosaic-card__link {
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--charcoal);
-  border-bottom: 1px solid var(--gold);
+  color: var(--gold-light);
+  border-bottom: 1px solid rgba(196,149,90,0.5);
   padding-bottom: 2px;
   transition: color 0.2s, border-color 0.2s;
 }
-.post-link span { transition: transform 0.2s; display: inline-block; }
-.post-link:hover { color: var(--gold-dark); }
-.post-link:hover span { transform: translateX(4px); }
+.mosaic-card:hover .mosaic-card__link {
+  color: var(--white);
+  border-color: var(--white);
+}
 
-.post--side {
-  display: grid;
-  grid-template-rows: auto 1fr;
+/* No-image fallback */
+.mosaic-card--no-img {
+  background: linear-gradient(135deg, #2c2825 0%, #4a3728 100%);
 }
 
 /* ── CATEGORY SECTIONS ───────────────────────────────────────────── */
@@ -2022,15 +1992,9 @@ cite {
 /* ── RESPONSIVE ──────────────────────────────────────────────────── */
 @media (max-width: 1100px) {
   .featured-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 340px 260px;
   }
-  .post--hero { grid-template-rows: 380px auto; }
-  .post-sidebar {
-    grid-template-rows: auto;
-    grid-template-columns: 1fr;
-  }
-  .post--side-top { grid-template-rows: 260px auto; }
-  .post--side { grid-template-rows: 220px auto; }
   .hero-inner {
     gap: 2.5rem;
   }
@@ -2085,6 +2049,13 @@ cite {
   .home-shop-grid { grid-template-columns: 1fr; }
   .home-ebook-book { width: 170px; }
   .home-ebook-stats { gap: 1.25rem; }
+  .featured-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 220px 180px;
+  }
+  .mosaic-card__title { font-size: 0.9rem !important; }
+  .mosaic-card__excerpt { display: none; }
+  .mosaic-card__body { padding: 0.9rem; }
 }
 
 @media (max-width: 720px) {
@@ -2093,14 +2064,10 @@ cite {
   .pillar-divider { width: 60px; height: 1px; margin: 0 auto; }
   .posts-grid,
   .posts-grid--lifestyle { grid-template-columns: 1fr; }
-  .post-sidebar {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
+  .featured-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 280px 220px;
   }
-  .post--side-bottom-row {
-    grid-template-columns: 1fr;
-  }
-  .post--side-sm { grid-template-rows: 200px auto; }
   .newsletter-form { flex-direction: column; }
   .newsletter-input {
     border-right: 1px solid rgba(255,255,255,0.12);
