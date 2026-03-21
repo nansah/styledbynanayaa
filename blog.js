@@ -59,10 +59,12 @@ const BlogCMS = (() => {
   }
 
   async function getPublished(category) {
+    // Include published + scheduled posts whose publish date has passed
     let q = db
       .from('posts')
       .select('*')
-      .eq('status', 'published')
+      .in('status', ['published', 'scheduled'])
+      .lte('published_at', new Date().toISOString())
       .order('published_at', { ascending: false });
     if (category) q = q.eq('category', category);
     const { data, error } = await q;

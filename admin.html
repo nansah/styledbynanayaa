@@ -430,6 +430,9 @@
     var titleVal     = post ? escAttr(post.title)      : '';
     var slugVal      = post ? escAttr(post.slug)       : '';
     var statusVal    = post ? post.status              : 'draft';
+    var dateVal      = post && post.publishedAt
+                         ? new Date(post.publishedAt).toISOString().slice(0, 16)
+                         : '';
     var catVal       = post ? post.category            : 'fashion';
     var tagsVal      = post ? escAttr((post.tags || []).join(', ')) : '';
     var coverVal     = post ? escAttr(post.coverImage || '') : '';
@@ -479,9 +482,15 @@
             '<div class="field-group">' +
               '<label class="field-label">Status</label>' +
               '<select class="field-select" id="field-status">' +
-                '<option value="draft"' + (statusVal === 'draft' ? ' selected' : '') + '>Draft</option>' +
-                '<option value="published"' + (statusVal === 'published' ? ' selected' : '') + '>Published</option>' +
+                '<option value="draft"'     + (statusVal === 'draft'      ? ' selected' : '') + '>Draft</option>' +
+                '<option value="published"' + (statusVal === 'published'  ? ' selected' : '') + '>Published</option>' +
+                '<option value="scheduled"' + (statusVal === 'scheduled'  ? ' selected' : '') + '>Scheduled</option>' +
               '</select>' +
+            '</div>' +
+            '<div class="field-group">' +
+              '<label class="field-label" for="field-publish-date">Publish Date</label>' +
+              '<input type="datetime-local" class="field-input" id="field-publish-date" value="' + dateVal + '" />' +
+              '<span style="font-size:0.68rem;color:var(--warm-gray);margin-top:0.25rem;display:block;">Leave blank to use today</span>' +
             '</div>' +
             '<div class="editor-actions">' +
               '<button class="btn-admin btn-admin--primary" onclick="savePost(\'draft\')">Save Draft</button>' +
@@ -795,6 +804,7 @@
     var seoTitle    = document.getElementById('field-seo-title').value.trim();
     var seoDesc     = document.getElementById('field-seo-desc').value.trim();
     var body        = document.getElementById('editor-body').innerHTML;
+    var dateField   = document.getElementById('field-publish-date').value;
 
     var existing = null;
     if (currentPostId) {
@@ -803,15 +813,27 @@
     }
     var now = new Date().toISOString();
 
+    // Resolve publish date: use custom date if set, else auto
+    var resolvedDate;
+    if (dateField) {
+      resolvedDate = new Date(dateField).toISOString();
+    } else if (status === 'published' && (!existing || existing.status !== 'published')) {
+      resolvedDate = now;
+    } else {
+      resolvedDate = existing ? existing.publishedAt : now;
+    }
+
+    // If publish date is in the future, treat as scheduled (store as published but won't appear until date passes)
+    var isFuture = resolvedDate && new Date(resolvedDate) > new Date();
+    var finalStatus = (status === 'published' && isFuture) ? 'scheduled' : status;
+
     var post = {
-      id:          existing ? existing.id          : BlogCMS.uid(),
+      id:          existing ? existing.id : BlogCMS.uid(),
       slug:        slug,
       title:       title,
       category:    category,
-      status:      status,
-      publishedAt: (status === 'published' && (!existing || existing.status !== 'published'))
-                     ? now
-                     : (existing ? existing.publishedAt : now),
+      status:      finalStatus,
+      publishedAt: resolvedDate,
       coverImage:  coverImage,
       coverAlt:    coverAlt,
       excerpt:     excerpt,
@@ -825,8 +847,11 @@
       var saved = await BlogCMS.save(post);
       currentPostId = saved.id;
       slugLocked    = true;
-      showToast(status === 'published' ? 'Post published!' : 'Draft saved.', status === 'published' ? 'gold' : '');
-      document.getElementById('field-status').value = status;
+      var toastMsg = finalStatus === 'scheduled'
+        ? 'Scheduled for ' + new Date(resolvedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' ⏰'
+        : finalStatus === 'published' ? 'Post published!' : 'Draft saved.';
+      showToast(toastMsg, finalStatus === 'published' ? 'gold' : '');
+      document.getElementById('field-status').value = finalStatus;
     } catch (err) {
       showToast('Save failed: ' + err.message);
     }
