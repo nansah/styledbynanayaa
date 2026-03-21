@@ -517,8 +517,13 @@
           '<div class="editor-sidebar-panel">' +
             '<span class="panel-title">Cover Image</span>' +
             '<div class="field-group">' +
-              '<label class="field-label" for="field-cover">Image URL or Path</label>' +
-              '<input type="text" class="field-input" id="field-cover" value="' + coverVal + '" placeholder="assets/img/photo.jpg" />' +
+              '<label class="field-label">Upload or paste URL</label>' +
+              '<div style="display:flex;gap:0.5rem;align-items:center;">' +
+                '<input type="text" class="field-input" id="field-cover" value="' + coverVal + '" placeholder="https://... or upload →" style="flex:1;min-width:0;" />' +
+                '<button type="button" class="btn-admin" id="cover-upload-btn" style="white-space:nowrap;flex-shrink:0;">Upload</button>' +
+              '</div>' +
+              '<input type="file" id="cover-file-input" accept="image/*" style="display:none;" />' +
+              '<div id="cover-upload-status" style="font-size:0.75rem;color:var(--gold);margin-top:0.35rem;display:none;"></div>' +
             '</div>' +
             '<div class="field-group">' +
               '<label class="field-label" for="field-cover-alt">Alt Text</label>' +
@@ -605,6 +610,54 @@
       } else {
         coverPreview.src = '';
         coverPreview.classList.remove('visible');
+      }
+    });
+
+    // Image upload to Supabase Storage
+    var coverUploadBtn   = document.getElementById('cover-upload-btn');
+    var coverFileInput   = document.getElementById('cover-file-input');
+    var coverUploadStatus = document.getElementById('cover-upload-status');
+
+    coverUploadBtn.addEventListener('click', function () {
+      coverFileInput.click();
+    });
+
+    coverFileInput.addEventListener('change', async function () {
+      var file = coverFileInput.files[0];
+      if (!file) return;
+
+      coverUploadBtn.disabled = true;
+      coverUploadBtn.textContent = 'Uploading…';
+      coverUploadStatus.style.display = 'block';
+      coverUploadStatus.textContent = 'Uploading…';
+
+      try {
+        var ext  = file.name.split('.').pop();
+        var path = 'posts/' + BlogCMS.uid() + '.' + ext;
+
+        var { data, error } = await BlogCMS.db.storage
+          .from('post-images')
+          .upload(path, file, { upsert: false, contentType: file.type });
+
+        if (error) throw error;
+
+        var { data: urlData } = BlogCMS.db.storage
+          .from('post-images')
+          .getPublicUrl(path);
+
+        var publicUrl = urlData.publicUrl;
+        coverInput.value = publicUrl;
+        coverPreview.src = publicUrl;
+        coverPreview.classList.add('visible');
+        coverUploadStatus.textContent = 'Uploaded ✓';
+        coverUploadStatus.style.color = '#7ab87a';
+      } catch (err) {
+        coverUploadStatus.textContent = 'Upload failed: ' + err.message;
+        coverUploadStatus.style.color = '#c0392b';
+      } finally {
+        coverUploadBtn.disabled = false;
+        coverUploadBtn.textContent = 'Upload';
+        coverFileInput.value = '';
       }
     });
 
