@@ -533,6 +533,37 @@ body.admin-body {
   align-self: stretch;
 }
 
+/* ── Link Popover ────────────────────────────────────────── */
+
+.link-popover {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 0.4rem 0.5rem;
+  background: #f0ece6;
+  border: 1px solid #e0d8cc;
+  border-bottom: none;
+}
+
+.link-popover.open {
+  display: flex;
+}
+
+.link-popover-input {
+  flex: 1;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.8rem;
+  font-family: 'Jost', sans-serif;
+  border: 1px solid #ddd;
+  color: #333;
+  outline: none;
+  min-width: 0;
+}
+
+.link-popover-input:focus {
+  border-color: #c4955a;
+}
+
 /* ── Editor Body (contenteditable) ───────────────────────── */
 
 .editor-body {

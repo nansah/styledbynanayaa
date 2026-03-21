@@ -501,6 +501,11 @@
             '<button class="toolbar-btn" data-cmd="insertHorizontalRule" title="Horizontal Rule">—</button>' +
             '<button class="toolbar-btn" data-cmd="removeFormat" title="Clear Formatting">Tx</button>' +
           '</div>' +
+          '<div class="link-popover" id="link-popover">' +
+            '<input type="url" id="link-url-input" class="link-popover-input" placeholder="https://…" />' +
+            '<button class="toolbar-btn" id="link-apply-btn">Apply</button>' +
+            '<button class="toolbar-btn" id="link-cancel-btn">✕</button>' +
+          '</div>' +
           '<div class="editor-body" id="editor-body" contenteditable="true" spellcheck="true">' +
             bodyHtml +
           '</div>' +
@@ -772,14 +777,48 @@
         document.execCommand('formatBlock', false, '<blockquote>');
         break;
       case 'link':
-        var url = prompt('Enter URL:');
-        if (url) {
-          body.focus();
-          document.execCommand('createLink', false, url);
-          // Open in new tab
-          var links = body.querySelectorAll('a:not([target])');
-          links.forEach(function (a) { a.target = '_blank'; a.rel = 'noopener'; });
+        var linkPopover = document.getElementById('link-popover');
+        var linkInput   = document.getElementById('link-url-input');
+        if (!linkPopover) break;
+        // Save selection so we can restore it when Apply is clicked
+        var sel = window.getSelection();
+        var savedLinkRange = (sel && sel.rangeCount) ? sel.getRangeAt(0).cloneRange() : null;
+        linkInput.value = '';
+        linkPopover.classList.add('open');
+        linkInput.focus();
+
+        function applyLink() {
+          var url = linkInput.value.trim();
+          linkPopover.classList.remove('open');
+          if (url) {
+            body.focus();
+            if (savedLinkRange) {
+              var s = window.getSelection();
+              s.removeAllRanges();
+              s.addRange(savedLinkRange);
+            }
+            document.execCommand('createLink', false, url);
+            body.querySelectorAll('a:not([target])').forEach(function (a) {
+              a.target = '_blank'; a.rel = 'noopener';
+            });
+          }
+          linkInput.removeEventListener('keydown', onLinkKey);
+          document.getElementById('link-apply-btn').removeEventListener('mousedown', applyLink);
+          document.getElementById('link-cancel-btn').removeEventListener('mousedown', cancelLink);
         }
+        function cancelLink() {
+          linkPopover.classList.remove('open');
+          linkInput.removeEventListener('keydown', onLinkKey);
+          document.getElementById('link-apply-btn').removeEventListener('mousedown', applyLink);
+          document.getElementById('link-cancel-btn').removeEventListener('mousedown', cancelLink);
+        }
+        function onLinkKey(e) {
+          if (e.key === 'Enter') { e.preventDefault(); applyLink(); }
+          if (e.key === 'Escape') { cancelLink(); }
+        }
+        linkInput.addEventListener('keydown', onLinkKey);
+        document.getElementById('link-apply-btn').addEventListener('mousedown', applyLink);
+        document.getElementById('link-cancel-btn').addEventListener('mousedown', cancelLink);
         break;
       case 'image':
         var imgUrl = prompt('Paste image URL:');
