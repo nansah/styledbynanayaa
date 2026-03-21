@@ -21,9 +21,9 @@
   <header class="site-header" id="site-header">
     <nav class="nav-container">
       <div class="nav-left">
-        <a href="/#fashion" class="nav-link">Fashion</a>
-        <a href="/#faith" class="nav-link">Faith</a>
-        <a href="/#lifestyle" class="nav-link">Lifestyle</a>
+        <a href="/blog/fashion" class="nav-link" data-nav="fashion">Fashion</a>
+        <a href="/blog/faith" class="nav-link" data-nav="faith">Faith</a>
+        <a href="/blog/lifestyle" class="nav-link" data-nav="lifestyle">Lifestyle</a>
       </div>
       <a href="/" class="nav-logo">
         <span class="logo-main">NANA YAA</span>
@@ -40,9 +40,9 @@
       </button>
     </nav>
     <div class="mobile-menu" id="mobile-menu">
-      <a href="/#fashion" class="mobile-link">Fashion</a>
-      <a href="/#faith" class="mobile-link">Faith</a>
-      <a href="/#lifestyle" class="mobile-link">Lifestyle</a>
+      <a href="/blog/fashion" class="mobile-link">Fashion</a>
+      <a href="/blog/faith" class="mobile-link">Faith</a>
+      <a href="/blog/lifestyle" class="mobile-link">Lifestyle</a>
       <a href="/shop" class="mobile-link">My Faves</a>
       <a href="/ebook" class="mobile-link">Ebook</a>
       <a href="/press" class="mobile-link">Press</a>
@@ -112,8 +112,9 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../config.js"></script>
-  <script src="blog.js"></script>
+  <script src="../blog.js"></script>
   <script src="../main.js"></script>
+  <script>document.querySelector('[data-nav="faith"]').classList.add('active');</script>
   <script>
     (async function () {
       var grid = document.getElementById('post-grid');
@@ -132,13 +133,13 @@
           var card = document.createElement('article');
           card.className = 'post-card';
           card.innerHTML =
-            '<a href="/blog/post?slug=' + encodeURIComponent(post.slug) + '" class="post-card-img" aria-label="' + post.title + '" style="' + imgStyle + '"></a>' +
+            '<a href="/blog/faith/post?slug=' + encodeURIComponent(post.slug) + '" class="post-card-img" aria-label="' + post.title + '" style="' + imgStyle + '"></a>' +
             '<div class="post-card-body">' +
               '<span class="post-card-category">' + post.category + '</span>' +
-              '<h2 class="post-card-title"><a href="/blog/post?slug=' + encodeURIComponent(post.slug) + '">' + post.title + '</a></h2>' +
+              '<h2 class="post-card-title"><a href="/blog/faith/post?slug=' + encodeURIComponent(post.slug) + '">' + post.title + '</a></h2>' +
               '<p class="post-card-excerpt">' + post.excerpt + '</p>' +
               '<p class="post-card-meta">' + BlogCMS.formatDate(post.publishedAt) + '</p>' +
-              '<a href="/blog/post?slug=' + encodeURIComponent(post.slug) + '" class="post-card-read">Read More →</a>' +
+              '<a href="/blog/faith/post?slug=' + encodeURIComponent(post.slug) + '" class="post-card-read">Read More →</a>' +
             '</div>';
           grid.appendChild(card);
         });

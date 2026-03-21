@@ -27,9 +27,9 @@
   <header class="site-header" id="site-header">
     <nav class="nav-container">
       <div class="nav-left">
-        <a href="/#fashion" class="nav-link">Fashion</a>
-        <a href="/#faith" class="nav-link">Faith</a>
-        <a href="/#lifestyle" class="nav-link">Lifestyle</a>
+        <a href="/blog/fashion" class="nav-link" data-nav="fashion">Fashion</a>
+        <a href="/blog/faith" class="nav-link" data-nav="faith">Faith</a>
+        <a href="/blog/lifestyle" class="nav-link" data-nav="lifestyle">Lifestyle</a>
       </div>
       <a href="/" class="nav-logo">
         <span class="logo-main">NANA YAA</span>
@@ -46,9 +46,9 @@
       </button>
     </nav>
     <div class="mobile-menu" id="mobile-menu">
-      <a href="/#fashion" class="mobile-link">Fashion</a>
-      <a href="/#faith" class="mobile-link">Faith</a>
-      <a href="/#lifestyle" class="mobile-link">Lifestyle</a>
+      <a href="/blog/fashion" class="mobile-link">Fashion</a>
+      <a href="/blog/faith" class="mobile-link">Faith</a>
+      <a href="/blog/lifestyle" class="mobile-link">Lifestyle</a>
       <a href="/shop" class="mobile-link">My Faves</a>
       <a href="/ebook" class="mobile-link">Ebook</a>
       <a href="/press" class="mobile-link">Press</a>
@@ -221,10 +221,13 @@
     document.getElementById('post-body').innerHTML = post.body;
 
     /* ── Back link ────────────────────────────────────── */
-    var catPage  = 'blog-' + post.category + '.html';
     var backLink = document.getElementById('post-back');
-    backLink.href        = catPage;
+    backLink.href        = '/blog/' + post.category;
     backLink.textContent = '← Back to ' + catCapital;
+
+    /* ── Active nav ───────────────────────────────────── */
+    var activeNavLink = document.querySelector('[data-nav="' + post.category + '"]');
+    if (activeNavLink) activeNavLink.classList.add('active');
 
     /* ── Share buttons ────────────────────────────────── */
     var pageUrl   = encodeURIComponent(window.location.href);
@@ -291,13 +294,13 @@
         var card = document.createElement('article');
         card.className = 'post-card';
         card.innerHTML =
-          '<a href="/blog/post?slug=' + encodeURIComponent(rp.slug) + '" class="post-card-img" aria-label="' + rp.title + '" style="' + imgStyle + '"></a>' +
+          '<a href="/blog/' + rp.category + '/post?slug=' + encodeURIComponent(rp.slug) + '" class="post-card-img" aria-label="' + rp.title + '" style="' + imgStyle + '"></a>' +
           '<div class="post-card-body">' +
             '<span class="post-card-category">' + rp.category + '</span>' +
-            '<h2 class="post-card-title"><a href="/blog/post?slug=' + encodeURIComponent(rp.slug) + '">' + rp.title + '</a></h2>' +
+            '<h2 class="post-card-title"><a href="/blog/' + rp.category + '/post?slug=' + encodeURIComponent(rp.slug) + '">' + rp.title + '</a></h2>' +
             '<p class="post-card-excerpt">' + rp.excerpt + '</p>' +
             '<p class="post-card-meta">' + BlogCMS.formatDate(rp.publishedAt) + '</p>' +
-            '<a href="/blog/post?slug=' + encodeURIComponent(rp.slug) + '" class="post-card-read">Read More →</a>' +
+            '<a href="/blog/' + rp.category + '/post?slug=' + encodeURIComponent(rp.slug) + '" class="post-card-read">Read More →</a>' +
           '</div>';
         relatedGrid.appendChild(card);
       });

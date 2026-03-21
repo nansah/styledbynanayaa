@@ -6,5 +6,10 @@
     { "source": "/blog-faith",     "destination": "/blog/faith",     "permanent": true },
     { "source": "/blog-lifestyle", "destination": "/blog/lifestyle", "permanent": true },
     { "source": "/blog-post",      "destination": "/blog/post",      "permanent": true }
+  ],
+  "rewrites": [
+    { "source": "/blog/fashion/post", "destination": "/blog/post" },
+    { "source": "/blog/faith/post",   "destination": "/blog/post" },
+    { "source": "/blog/lifestyle/post", "destination": "/blog/post" }
   ]
 }

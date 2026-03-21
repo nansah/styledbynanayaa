@@ -16,9 +16,9 @@
   <header class="site-header" id="site-header">
     <nav class="nav-container">
       <div class="nav-left">
-        <a href="#fashion" class="nav-link">Fashion</a>
-        <a href="#faith" class="nav-link">Faith</a>
-        <a href="#lifestyle" class="nav-link">Lifestyle</a>
+        <a href="/blog/fashion" class="nav-link">Fashion</a>
+        <a href="/blog/faith" class="nav-link">Faith</a>
+        <a href="/blog/lifestyle" class="nav-link">Lifestyle</a>
       </div>
       <a href="#" class="nav-logo">
         <span class="logo-main">NANA YAA</span>
@@ -36,9 +36,9 @@
       </button>
     </nav>
     <div class="mobile-menu" id="mobile-menu">
-      <a href="#fashion" class="mobile-link">Fashion</a>
-      <a href="#faith" class="mobile-link">Faith</a>
-      <a href="#lifestyle" class="mobile-link">Lifestyle</a>
+      <a href="/blog/fashion" class="mobile-link">Fashion</a>
+      <a href="/blog/faith" class="mobile-link">Faith</a>
+      <a href="/blog/lifestyle" class="mobile-link">Lifestyle</a>
       <a href="/shop" class="mobile-link">My Faves</a>
       <a href="/blog" class="mobile-link">Blog</a>
       <a href="/ebook" class="mobile-link">Ebook</a>
@@ -539,7 +539,7 @@
     }
 
     function mosaicCard(p, size) {
-      var url      = '/blog/post?slug=' + encodeURIComponent(p.slug);
+      var url      = '/blog/' + p.category + '/post?slug=' + encodeURIComponent(p.slug);
       var imgStyle = p.coverImage ? 'background-image:url(' + p.coverImage + ');' : 'background:linear-gradient(135deg,#2c2825 0%,#4a3728 100%);';
       return (
         '<article class="post--mosaic post--mosaic-' + size + '">' +
