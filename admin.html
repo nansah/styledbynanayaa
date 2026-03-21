@@ -741,6 +741,11 @@
     updateCount(seoDescTA, document.getElementById('seo-desc-count'), 180);
 
     // Toolbar
+    document.getElementById('toolbar').addEventListener('mousedown', function (e) {
+      var btn = e.target.closest('[data-cmd]');
+      if (!btn) return;
+      e.preventDefault(); // keep editor focus + selection
+    });
     document.getElementById('toolbar').addEventListener('click', function (e) {
       var btn = e.target.closest('[data-cmd]');
       if (!btn) return;
@@ -767,16 +772,9 @@
         document.execCommand('formatBlock', false, '<blockquote>');
         break;
       case 'link':
-        var sel = window.getSelection();
-        var savedRange = (sel && sel.rangeCount) ? sel.getRangeAt(0).cloneRange() : null;
         var url = prompt('Enter URL:');
         if (url) {
           body.focus();
-          if (savedRange) {
-            var s = window.getSelection();
-            s.removeAllRanges();
-            s.addRange(savedRange);
-          }
           document.execCommand('createLink', false, url);
           // Open in new tab
           var links = body.querySelectorAll('a:not([target])');
