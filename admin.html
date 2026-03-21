@@ -975,13 +975,13 @@
   function processImportFile(file) {
     var reader = new FileReader();
     reader.onload = async function (e) {
-      var ok = await BlogCMS.importPosts(e.target.result);
+      var result = await BlogCMS.importPosts(e.target.result);
       var res = document.getElementById('import-result');
-      if (ok) {
-        if (res) { res.style.color = '#2e7d32'; res.textContent = 'Posts imported successfully.'; }
-        showToast('Posts imported!', 'gold');
+      if (result.ok) {
+        if (res) { res.style.color = '#2e7d32'; res.textContent = result.count + ' posts imported successfully.'; }
+        showToast(result.count + ' posts imported!', 'gold');
       } else {
-        if (res) { res.style.color = '#c0392b'; res.textContent = 'Import failed — invalid JSON file.'; }
+        if (res) { res.style.color = '#c0392b'; res.textContent = 'Import failed: ' + result.error; }
         showToast('Import failed.');
       }
     };

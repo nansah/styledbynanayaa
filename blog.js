@@ -218,14 +218,41 @@ const BlogCMS = (() => {
   }
 
   async function importPosts(json) {
+    let posts;
     try {
-      const posts = JSON.parse(json);
-      if (!Array.isArray(posts)) throw new Error('not an array');
-      for (const p of posts) await save(p);
-      return true;
-    } catch {
-      return false;
+      posts = JSON.parse(json);
+    } catch (e) {
+      return { ok: false, error: 'Invalid JSON: ' + e.message };
     }
+    if (!Array.isArray(posts)) {
+      return { ok: false, error: 'File must contain a JSON array.' };
+    }
+    let imported = 0;
+    for (const p of posts) {
+      // Accept both camelCase (our format) and any missing fields gracefully
+      const post = {
+        id:          p.id          || uid(),
+        slug:        p.slug        || slugify(p.title || ''),
+        title:       p.title       || '',
+        category:    p.category    || 'lifestyle',
+        status:      p.status      || 'published',
+        publishedAt: p.publishedAt || p.published_at || new Date().toISOString(),
+        coverImage:  p.coverImage  || p.cover_image  || '',
+        coverAlt:    p.coverAlt    || p.cover_alt    || '',
+        excerpt:     p.excerpt     || '',
+        body:        p.body        || '',
+        seoTitle:    p.seoTitle    || p.seo_title    || '',
+        seoDesc:     p.seoDesc     || p.seo_desc     || '',
+        tags:        p.tags        || [],
+      };
+      try {
+        await save(post);
+        imported++;
+      } catch (e) {
+        return { ok: false, error: 'Post "' + post.title.slice(0, 40) + '" failed: ' + e.message };
+      }
+    }
+    return { ok: true, count: imported };
   }
 
   /* ── Public API ───────────────────────────────────────────────── */
