@@ -196,50 +196,8 @@
       <h2 class="section-title">The Edit</h2>
     </div>
 
-    <div class="featured-grid">
-      <!-- Hero Post -->
-      <article class="post post--hero">
-        <div class="post-image">
-          <div class="filler-img filler-img--fashion-hero"></div>
-          <div class="post-image-overlay"></div>
-          <div class="post-badge">Fashion</div>
-        </div>
-        <div class="post-body">
-          <span class="post-date">March 2026</span>
-          <h2 class="post-title">The New York Woman's Spring Wardrobe Guide</h2>
-          <p class="post-excerpt">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.</p>
-          <a href="/blog/fashion" class="post-link">Read More <span>→</span></a>
-        </div>
-      </article>
-
-      <!-- Side Posts -->
-      <div class="post-sidebar">
-        <article class="post post--side">
-          <div class="post-image post-image--small">
-            <div class="filler-img filler-img--faith"></div>
-            <div class="post-badge post-badge--warm">Faith</div>
-          </div>
-          <div class="post-body">
-            <span class="post-date">March 2026</span>
-            <h3 class="post-title">When God Redirects Your Plans</h3>
-            <p class="post-excerpt">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-            <a href="/blog/faith" class="post-link">Read More <span>→</span></a>
-          </div>
-        </article>
-
-        <article class="post post--side">
-          <div class="post-image post-image--small">
-            <div class="filler-img filler-img--lifestyle"></div>
-            <div class="post-badge post-badge--warm">Lifestyle</div>
-          </div>
-          <div class="post-body">
-            <span class="post-date">February 2026</span>
-            <h3 class="post-title">48 Hours in Paris: A Luxury Itinerary</h3>
-            <p class="post-excerpt">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
-            <a href="/blog/lifestyle" class="post-link">Read More <span>→</span></a>
-          </div>
-        </article>
-      </div>
+    <div class="featured-grid" id="the-edit-grid">
+      <!-- Populated by JS from Supabase -->
     </div>
   </section>
 
@@ -562,7 +520,77 @@
     </div>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="blog.js"></script>
   <script src="main.js"></script>
+  <script>
+  (async function () {
+    var grid = document.getElementById('the-edit-grid');
+    if (!grid) return;
+
+    function catCapital(c) {
+      return c ? c.charAt(0).toUpperCase() + c.slice(1) : '';
+    }
+
+    function formatDate(iso) {
+      if (!iso) return '';
+      return new Date(iso).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    }
+
+    try {
+      var posts = await BlogCMS.getPublished();
+      if (!posts.length) return;
+
+      var hero = posts[0];
+      var sides = posts.slice(1, 3);
+
+      // Hero post
+      var heroImgStyle = hero.coverImage
+        ? 'background-image:url(' + hero.coverImage + ');background-size:cover;background-position:center;'
+        : 'background:linear-gradient(135deg,#2c2825 0%,#4a3728 100%);';
+
+      var heroHtml =
+        '<article class="post post--hero">' +
+          '<a href="/blog/post?slug=' + encodeURIComponent(hero.slug) + '" class="post-image" style="' + heroImgStyle + '">' +
+            '<div class="post-image-overlay"></div>' +
+            '<div class="post-badge">' + catCapital(hero.category) + '</div>' +
+          '</a>' +
+          '<div class="post-body">' +
+            '<span class="post-date">' + formatDate(hero.publishedAt) + '</span>' +
+            '<h2 class="post-title"><a href="/blog/post?slug=' + encodeURIComponent(hero.slug) + '" style="color:inherit;text-decoration:none;">' + hero.title + '</a></h2>' +
+            '<p class="post-excerpt">' + hero.excerpt + '</p>' +
+            '<a href="/blog/post?slug=' + encodeURIComponent(hero.slug) + '" class="post-link">Read More <span>→</span></a>' +
+          '</div>' +
+        '</article>';
+
+      // Side posts
+      var sidesHtml = '<div class="post-sidebar">';
+      sides.forEach(function (p) {
+        var imgStyle = p.coverImage
+          ? 'background-image:url(' + p.coverImage + ');background-size:cover;background-position:center;'
+          : 'background:linear-gradient(135deg,#3a2a20 0%,#5a4030 100%);';
+        sidesHtml +=
+          '<article class="post post--side">' +
+            '<a href="/blog/post?slug=' + encodeURIComponent(p.slug) + '" class="post-image post-image--small" style="' + imgStyle + '">' +
+              '<div class="post-badge post-badge--warm">' + catCapital(p.category) + '</div>' +
+            '</a>' +
+            '<div class="post-body">' +
+              '<span class="post-date">' + formatDate(p.publishedAt) + '</span>' +
+              '<h3 class="post-title"><a href="/blog/post?slug=' + encodeURIComponent(p.slug) + '" style="color:inherit;text-decoration:none;">' + p.title + '</a></h3>' +
+              '<p class="post-excerpt">' + p.excerpt + '</p>' +
+              '<a href="/blog/post?slug=' + encodeURIComponent(p.slug) + '" class="post-link">Read More <span>→</span></a>' +
+            '</div>' +
+          '</article>';
+      });
+      sidesHtml += '</div>';
+
+      grid.innerHTML = heroHtml + (sides.length ? sidesHtml : '');
+    } catch (e) {
+      // Fail silently — grid stays empty
+    }
+  })();
+  </script>
   <script src="instagram.js"></script>
 </body>
 </html>
