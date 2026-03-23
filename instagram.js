@@ -1,9 +1,9 @@
 /* ═══════════════════════════════════════════════════════════════════
    STYLED BY NANA YAA — Instagram Grid (Supabase-powered)
-   Tiles are managed from the Admin → Instagram Grid panel.
+   Tiles are managed from Admin → Instagram Grid.
    ═══════════════════════════════════════════════════════════════════ */
 
-document.addEventListener('DOMContentLoaded', async function () {
+(async function () {
   var grid = document.getElementById('ig-grid');
   if (!grid) return;
 
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       grid.appendChild(a);
     });
   } catch (err) {
-    console.error('[Instagram Grid] Failed to load tiles:', err.message);
+    console.error('[Instagram Grid]', err);
     grid.style.display = 'none';
   }
-});
+})();
