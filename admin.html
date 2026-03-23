@@ -1017,6 +1017,7 @@
           '<td><span class="post-status-badge post-status-badge--' + f.status + '">' + f.status + '</span></td>' +
           '<td class="table-actions">' +
             '<button class="btn-admin btn-admin--sm" onclick="showView(\'fave-edit\', \'' + f.id + '\')">Edit</button>' +
+            (f.status === 'published' ? '<a class="btn-admin btn-admin--sm" href="/shop" target="_blank" style="text-decoration:none;">View ↗</a>' : '') +
             '<button class="btn-admin btn-admin--sm btn-admin--danger" onclick="confirmDelete(\'' + f.id + '\', \'fave\')">Delete</button>' +
           '</td>' +
         '</tr>';
