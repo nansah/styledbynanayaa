@@ -1675,9 +1675,9 @@ cite {
 .filler-img--shop-fashion {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(ellipse at 50% 10%, rgba(255,240,215,0.5) 0%, transparent 50%),
-    linear-gradient(160deg, #c89870 0%, #906040 50%, #5c3020 100%);
+  background-image: url('/assets/img/nana_yaa_in_asos_design_cinched_waist_blazer_dress_in_buttermilk.jpg');
+  background-size: cover;
+  background-position: center top;
 }
 .filler-img--shop-beauty {
   position: absolute;
