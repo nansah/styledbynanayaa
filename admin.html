@@ -58,6 +58,9 @@
       <button class="sidebar-link" data-view="faves-new">New Fave</button>
       <button class="sidebar-link" data-view="faves-all">All Faves</button>
 
+      <span class="sidebar-section-label">Instagram</span>
+      <button class="sidebar-link" data-view="ig-grid">Instagram Grid</button>
+
       <span class="sidebar-section-label">Settings</span>
       <button class="sidebar-link" data-view="export">Export Posts</button>
       <button class="sidebar-link" data-view="import">Import Posts</button>
@@ -314,6 +317,11 @@
         topbarTitle.textContent = 'Import Posts';
         topbarActions.innerHTML = '';
         renderImport();
+        break;
+      case 'ig-grid':
+        topbarTitle.textContent = 'Instagram Grid';
+        topbarActions.innerHTML = '';
+        await renderIgGrid();
         break;
     }
   }
@@ -1216,6 +1224,121 @@
       if (viewWrap && st === 'published') viewWrap.style.display = 'block';
     } catch (err) {
       showToast('Save failed: ' + err.message);
+    }
+  };
+
+  /* ─── Instagram Grid ──────────────────────────────────── */
+  async function renderIgGrid() {
+    adminContent.innerHTML = '<p style="padding:2rem;color:#888">Loading…</p>';
+    var tiles = await BlogCMS.getIgTiles();
+
+    // Build a map by sort_order slot (0–7)
+    var tileMap = {};
+    tiles.forEach(function (t) { tileMap[t.sort_order] = t; });
+
+    var html = '<div class="admin-card" style="max-width:100%;">' +
+      '<span class="admin-card-title">Instagram Grid</span>' +
+      '<p style="font-size:0.85rem;color:#888;margin-bottom:1.5rem;">Up to 8 tiles · Upload a photo and paste the Instagram post link · Save each tile individually.</p>' +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem;">';
+
+    for (var i = 0; i < 8; i++) {
+      var t = tileMap[i] || null;
+      var imgVal  = t ? (t.image_url || '') : '';
+      var postVal = t ? (t.post_url  || '') : '';
+      var tileId  = t ? t.id : '';
+      var previewStyle = imgVal ? 'display:block;' : 'display:none;';
+
+      html +=
+        '<div class="admin-card" style="padding:1rem;margin:0;" data-slot="' + i + '">' +
+          '<div style="position:relative;aspect-ratio:1;background:#f0ebe4;margin-bottom:0.75rem;overflow:hidden;cursor:pointer;" id="ig-preview-wrap-' + i + '" onclick="document.getElementById(\'ig-file-' + i + '\').click()">' +
+            '<img id="ig-img-' + i + '" src="' + imgVal + '" style="width:100%;height:100%;object-fit:cover;' + previewStyle + '" />' +
+            '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.5rem;color:#bbb;" id="ig-placeholder-' + i + (imgVal ? '" class="hidden"' : '"') + '>' +
+              '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>' +
+              '<span style="font-size:0.75rem;">Click to upload</span>' +
+            '</div>' +
+            '<input type="file" id="ig-file-' + i + '" accept="image/*" style="display:none;" data-slot="' + i + '" />' +
+          '</div>' +
+          '<span id="ig-upload-status-' + i + '" style="font-size:0.75rem;color:#888;display:none;margin-bottom:0.5rem;"></span>' +
+          '<input type="url" class="field-input" id="ig-post-url-' + i + '" value="' + postVal + '" placeholder="Instagram post URL…" style="margin-bottom:0.75rem;" />' +
+          '<input type="hidden" id="ig-image-url-' + i + '" value="' + imgVal + '" />' +
+          '<input type="hidden" id="ig-tile-id-' + i + '" value="' + tileId + '" />' +
+          '<div style="display:flex;gap:0.5rem;">' +
+            '<button class="btn-admin btn-admin--gold" style="flex:1;" onclick="saveIgTile(' + i + ')">Save</button>' +
+            (tileId ? '<button class="btn-admin btn-admin--danger" onclick="deleteIgTile(\'' + tileId + '\',' + i + ')">✕</button>' : '') +
+          '</div>' +
+        '</div>';
+    }
+
+    html += '</div></div>';
+    adminContent.innerHTML = html;
+
+    // Wire up file inputs
+    for (var j = 0; j < 8; j++) {
+      (function (slot) {
+        var fileInput   = document.getElementById('ig-file-' + slot);
+        var imgEl       = document.getElementById('ig-img-' + slot);
+        var placeholder = document.getElementById('ig-placeholder-' + slot);
+        var status      = document.getElementById('ig-upload-status-' + slot);
+        var hiddenUrl   = document.getElementById('ig-image-url-' + slot);
+
+        fileInput.addEventListener('change', async function () {
+          var file = fileInput.files[0];
+          if (!file) return;
+          status.style.display = 'block';
+          status.style.color   = '#888';
+          status.textContent   = 'Uploading…';
+          try {
+            var ext  = file.name.split('.').pop();
+            var path = 'ig/' + BlogCMS.uid() + '.' + ext;
+            var { error } = await BlogCMS.db.storage
+              .from('post-images')
+              .upload(path, file, { upsert: false, contentType: file.type });
+            if (error) throw error;
+            var { data: urlData } = BlogCMS.db.storage.from('post-images').getPublicUrl(path);
+            var url = urlData.publicUrl;
+            hiddenUrl.value  = url;
+            imgEl.src        = url;
+            imgEl.style.display = 'block';
+            if (placeholder) placeholder.style.display = 'none';
+            status.textContent = 'Uploaded ✓';
+            status.style.color = '#7ab87a';
+          } catch (err) {
+            status.textContent = 'Upload failed: ' + err.message;
+            status.style.color = '#c0392b';
+          } finally {
+            fileInput.value = '';
+          }
+        });
+      })(j);
+    }
+  }
+
+  window.saveIgTile = async function (slot) {
+    var imageUrl = document.getElementById('ig-image-url-' + slot).value.trim();
+    var postUrl  = document.getElementById('ig-post-url-'  + slot).value.trim();
+    var tileId   = document.getElementById('ig-tile-id-'   + slot).value.trim();
+    if (!imageUrl && !postUrl) { showToast('Add an image or URL first.'); return; }
+    try {
+      await BlogCMS.saveIgTile({
+        id:        tileId || BlogCMS.uid(),
+        imageUrl:  imageUrl,
+        postUrl:   postUrl || 'https://instagram.com/nanayaaansah',
+        sortOrder: slot,
+      });
+      showToast('Tile ' + (slot + 1) + ' saved ✓', 'gold');
+      await renderIgGrid();
+    } catch (err) {
+      showToast('Save failed: ' + err.message);
+    }
+  };
+
+  window.deleteIgTile = async function (id, slot) {
+    try {
+      await BlogCMS.removeIgTile(id);
+      showToast('Tile ' + (slot + 1) + ' cleared.');
+      await renderIgGrid();
+    } catch (err) {
+      showToast('Delete failed: ' + err.message);
     }
   };
 

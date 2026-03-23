@@ -258,11 +258,38 @@ const BlogCMS = (() => {
     return { ok: true, count: imported };
   }
 
+  /* ── Instagram Grid ───────────────────────────────────────────── */
+
+  async function getIgTiles() {
+    const { data, error } = await db
+      .from('ig_tiles')
+      .select('*')
+      .order('sort_order', { ascending: true });
+    if (error) throw error;
+    return data || [];
+  }
+
+  async function saveIgTile(tile) {
+    const { data, error } = await db
+      .from('ig_tiles')
+      .upsert({ id: tile.id, image_url: tile.imageUrl, post_url: tile.postUrl, sort_order: tile.sortOrder }, { onConflict: 'id' })
+      .select()
+      .single();
+    if (error) throw error;
+    return data;
+  }
+
+  async function removeIgTile(id) {
+    const { error } = await db.from('ig_tiles').delete().eq('id', id);
+    if (error) throw error;
+  }
+
   /* ── Public API ───────────────────────────────────────────────── */
   return {
     db,
     getPosts, getPublished, getPost, save, remove,
     getFaves, getPublishedFaves, saveFave, removeFave,
+    getIgTiles, saveIgTile, removeIgTile,
     login, logout, getSession, onAuthChange,
     slugify, uid, formatDate,
     exportPosts, importPosts,

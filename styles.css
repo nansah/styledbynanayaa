@@ -1195,7 +1195,7 @@ cite {
 
 .instagram-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 3px;
   max-width: var(--max-w);
   margin: 0 auto 2.5rem;
