@@ -1122,8 +1122,12 @@
           '<div class="editor-sidebar-panel">' +
             '<span class="panel-title">Product Image</span>' +
             '<div class="field-group">' +
-              '<label class="field-label" for="fave-img">Image URL</label>' +
-              '<input type="text" class="field-input" id="fave-img" value="' + imgVal + '" placeholder="https://… or assets/img/…" />' +
+              '<div style="display:flex;gap:0.5rem;align-items:center;">' +
+                '<input type="text" class="field-input" id="fave-img" value="' + imgVal + '" placeholder="https://… or upload →" style="flex:1;min-width:0;" />' +
+                '<button class="btn-admin" id="fave-img-upload-btn" type="button">Upload</button>' +
+              '</div>' +
+              '<input type="file" id="fave-img-file" accept="image/*" style="display:none;" />' +
+              '<span id="fave-img-upload-status" style="font-size:0.75rem;color:#888;margin-top:0.25rem;display:none;"></span>' +
             '</div>' +
             '<img id="fave-img-preview" src="' + imgPreviewSrc + '" alt="Image preview"' + imgPreviewStyle + ' />' +
           '</div>' +
@@ -1132,12 +1136,52 @@
 
     adminContent.innerHTML = html;
 
-    var imgInput   = document.getElementById('fave-img');
-    var imgPreview = document.getElementById('fave-img-preview');
+    var imgInput        = document.getElementById('fave-img');
+    var imgPreview      = document.getElementById('fave-img-preview');
+    var imgUploadBtn    = document.getElementById('fave-img-upload-btn');
+    var imgFileInput    = document.getElementById('fave-img-file');
+    var imgUploadStatus = document.getElementById('fave-img-upload-status');
+
     imgInput.addEventListener('input', function () {
       var v = imgInput.value.trim();
       if (v) { imgPreview.src = v; imgPreview.classList.add('visible'); }
       else   { imgPreview.src = ''; imgPreview.classList.remove('visible'); }
+    });
+
+    imgUploadBtn.addEventListener('click', function () { imgFileInput.click(); });
+
+    imgFileInput.addEventListener('change', async function () {
+      var file = imgFileInput.files[0];
+      if (!file) return;
+      imgUploadBtn.disabled = true;
+      imgUploadBtn.textContent = 'Uploading…';
+      imgUploadStatus.style.display = 'block';
+      imgUploadStatus.textContent = 'Uploading…';
+      imgUploadStatus.style.color = '#888';
+      try {
+        var ext  = file.name.split('.').pop();
+        var path = 'faves/' + BlogCMS.uid() + '.' + ext;
+        var { error } = await BlogCMS.db.storage
+          .from('post-images')
+          .upload(path, file, { upsert: false, contentType: file.type });
+        if (error) throw error;
+        var { data: urlData } = BlogCMS.db.storage
+          .from('post-images')
+          .getPublicUrl(path);
+        var publicUrl = urlData.publicUrl;
+        imgInput.value = publicUrl;
+        imgPreview.src = publicUrl;
+        imgPreview.classList.add('visible');
+        imgUploadStatus.textContent = 'Uploaded ✓';
+        imgUploadStatus.style.color = '#7ab87a';
+      } catch (err) {
+        imgUploadStatus.textContent = 'Upload failed: ' + err.message;
+        imgUploadStatus.style.color = '#c0392b';
+      } finally {
+        imgUploadBtn.disabled = false;
+        imgUploadBtn.textContent = 'Upload';
+        imgFileInput.value = '';
+      }
     });
   }
 
