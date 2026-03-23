@@ -9,15 +9,15 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   try {
     var tiles = await BlogCMS.getIgTiles();
+    var withImages = tiles.filter(function (t) { return t.image_url; });
 
-    if (!tiles.length) {
+    if (!withImages.length) {
       grid.style.display = 'none';
       return;
     }
 
     grid.innerHTML = '';
-    tiles.forEach(function (t) {
-      if (!t.image_url) return;
+    withImages.forEach(function (t) {
       var a = document.createElement('a');
       a.className = 'ig-tile';
       a.href      = t.post_url || 'https://instagram.com/nanayaaansah';

@@ -1252,7 +1252,7 @@
         '<div class="admin-card" style="padding:1rem;margin:0;" data-slot="' + i + '">' +
           '<div style="position:relative;aspect-ratio:1;background:#f0ebe4;margin-bottom:0.75rem;overflow:hidden;cursor:pointer;" id="ig-preview-wrap-' + i + '" onclick="document.getElementById(\'ig-file-' + i + '\').click()">' +
             '<img id="ig-img-' + i + '" src="' + imgVal + '" style="width:100%;height:100%;object-fit:cover;' + previewStyle + '" />' +
-            '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.5rem;color:#bbb;" id="ig-placeholder-' + i + (imgVal ? '" class="hidden"' : '"') + '>' +
+            '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.5rem;color:#bbb;' + (imgVal ? 'display:none;' : '') + '" id="ig-placeholder-' + i + '">' +
               '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>' +
               '<span style="font-size:0.75rem;">Click to upload</span>' +
             '</div>' +
