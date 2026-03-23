@@ -1010,7 +1010,7 @@
         '</tr></thead><tbody>';
       faves.forEach(function (f) {
         html += '<tr>' +
-          '<td class="post-title-cell">' + escHtml(f.name) + (f.isFave ? ' <span class="post-cat-badge" style="background:var(--gold);color:#fff;">NYA Fave</span>' : '') + '</td>' +
+          '<td class="post-title-cell">' + escHtml(f.name) + '</td>' +
           '<td>' + escHtml(f.brand) + '</td>' +
           '<td><span class="post-cat-badge">' + f.category + '</span></td>' +
           '<td>' + escHtml(f.price) + '</td>' +
