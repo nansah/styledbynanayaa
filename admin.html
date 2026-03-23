@@ -1328,7 +1328,8 @@
       showToast('Tile ' + (slot + 1) + ' saved ✓', 'gold');
       await renderIgGrid();
     } catch (err) {
-      showToast('Save failed: ' + err.message);
+      console.error('[saveIgTile]', err);
+      showToast('Save failed: ' + (err.message || err.error_description || JSON.stringify(err)));
     }
   };
 
