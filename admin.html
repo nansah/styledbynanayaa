@@ -1081,6 +1081,9 @@
               '<button class="btn-admin btn-admin--primary" onclick="saveFaveItem(\'draft\')">Save Draft</button>' +
               '<button class="btn-admin btn-admin--gold" onclick="saveFaveItem(\'published\')">Publish</button>' +
             '</div>' +
+            '<div id="view-fave-wrap" style="margin-top:0.5rem;' + (fave && fave.status === 'published' ? '' : 'display:none;') + '">' +
+              '<a id="view-fave-link" href="/shop" target="_blank" class="btn-admin btn-admin--gold" style="width:100%;justify-content:center;text-decoration:none;">View on Shop ↗</a>' +
+            '</div>' +
             (fave ? '<button class="btn-admin btn-admin--danger" onclick="confirmDelete(\'' + fave.id + '\', \'fave\')" style="width:100%;justify-content:center;margin-top:0.5rem;">Delete Item</button>' : '') +
           '</div>' +
           '<div class="editor-sidebar-panel">' +
@@ -1212,6 +1215,8 @@
       var st = fave.status;
       showToast(st === 'published' ? 'Item published!' : 'Draft saved.', st === 'published' ? 'gold' : '');
       document.getElementById('fave-status').value = st;
+      var viewWrap = document.getElementById('view-fave-wrap');
+      if (viewWrap && st === 'published') viewWrap.style.display = 'block';
     } catch (err) {
       showToast('Save failed: ' + err.message);
     }
