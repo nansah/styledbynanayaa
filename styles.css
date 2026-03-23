@@ -1202,7 +1202,7 @@ cite {
   margin: 0 auto 2.5rem;
 }
 .ig-tile {
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 2 / 3;
   overflow: hidden;
   cursor: pointer;
   position: relative;
