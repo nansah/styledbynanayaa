@@ -1682,23 +1682,23 @@ cite {
 .filler-img--shop-beauty {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(ellipse at 50% 15%, rgba(255,230,240,0.5) 0%, transparent 50%),
-    linear-gradient(160deg, #e0a8b8 0%, #a06878 50%, #603848 100%);
+  background-image: url('/assets/img/NanaYaa_Ansah_JoMaloneGingerBiscuit.jpg');
+  background-size: cover;
+  background-position: center;
 }
 .filler-img--shop-home {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(ellipse at 45% 20%, rgba(220,235,245,0.5) 0%, transparent 50%),
-    linear-gradient(160deg, #a0b8c8 0%, #607888 50%, #303848 100%);
+  background-image: url('/assets/img/nanayaa_lifestyle_booksandvase.jpg');
+  background-size: cover;
+  background-position: center;
 }
 .filler-img--shop-wellness {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(ellipse at 55% 15%, rgba(235,225,245,0.5) 0%, transparent 50%),
-    linear-gradient(160deg, #b8a0c8 0%, #786088 50%, #403050 100%);
+  background-image: url('/assets/img/gaelle-marcel-Qtt9KbJrPK8-unsplash.jpg');
+  background-size: cover;
+  background-position: center;
 }
 
 /* ── HOME EBOOK SECTION ──────────────────────────────────────────── */
