@@ -436,27 +436,28 @@
     var grid = document.getElementById('the-edit-grid');
     if (!grid) return;
 
-    function catCapital(c) {
-      return c ? c.charAt(0).toUpperCase() + c.slice(1) : '';
-    }
+    function catCapital(c) { return c ? c.charAt(0).toUpperCase() + c.slice(1) : ''; }
     function formatDate(iso) {
       if (!iso) return '';
       return new Date(iso).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
     }
-    function editCard(p) {
-      var url    = '/blog/' + p.category + '/post?slug=' + encodeURIComponent(p.slug);
-      var imgBg  = p.coverImage
-        ? 'background-image:url(' + p.coverImage + ');background-size:cover;background-position:center top;'
-        : 'background:linear-gradient(160deg,#2c2825 0%,#4a3728 100%);';
+
+    function imgStyle(p) {
+      return p.coverImage ? 'background-image:url(' + p.coverImage + ')' : '';
+    }
+
+    function editPost(p, featured) {
+      var url = '/blog/' + p.category + '/post?slug=' + encodeURIComponent(p.slug);
       return (
-        '<a class="edit-card" href="' + url + '">' +
-          '<div class="edit-card-img" style="' + imgBg + '"></div>' +
-          '<div class="edit-card-overlay"></div>' +
-          '<div class="edit-card-body">' +
-            '<span class="edit-card-cat">' + catCapital(p.category) + '</span>' +
-            '<h2 class="edit-card-title">' + p.title + '</h2>' +
-            '<span class="edit-card-date">' + formatDate(p.publishedAt) + '</span>' +
-            '<span class="edit-card-cta">Read More →</span>' +
+        '<a class="edit-post' + (featured ? ' edit-post--featured' : '') + '" href="' + url + '">' +
+          '<div class="edit-post-img">' +
+            '<div class="edit-post-img-inner" style="' + imgStyle(p) + '"></div>' +
+          '</div>' +
+          '<div class="edit-post-body">' +
+            '<span class="edit-post-cat">' + catCapital(p.category) + '</span>' +
+            '<h2 class="edit-post-title">' + p.title + '</h2>' +
+            '<p class="edit-post-excerpt">' + (p.excerpt || '') + '</p>' +
+            '<span class="edit-post-more">More</span>' +
           '</div>' +
         '</a>'
       );
@@ -465,22 +466,11 @@
     try {
       var posts = await BlogCMS.getPublished();
       if (!posts.length) return;
-      grid.classList.add('the-edit-scroll');
-      grid.innerHTML = posts.slice(0, 6).map(editCard).join('');
+      grid.classList.add('the-edit-grid');
+      var featured = posts[0] ? editPost(posts[0], true) : '';
+      var rest = posts.slice(1, 4).map(function(p) { return editPost(p, false); }).join('');
+      grid.innerHTML = featured + (rest ? '<div class="the-edit-row">' + rest + '</div>' : '');
     } catch (e) { /* fail silently */ }
-
-    // Drag to scroll
-    var isDown = false, startX, scrollLeft;
-    grid.addEventListener('mousedown', function(e) {
-      isDown = true; startX = e.pageX - grid.offsetLeft; scrollLeft = grid.scrollLeft;
-    });
-    grid.addEventListener('mouseleave', function() { isDown = false; });
-    grid.addEventListener('mouseup',    function() { isDown = false; });
-    grid.addEventListener('mousemove',  function(e) {
-      if (!isDown) return;
-      e.preventDefault();
-      grid.scrollLeft = scrollLeft - (e.pageX - grid.offsetLeft - startX) * 1.4;
-    });
   })();
   </script>
   <script src="instagram.js"></script>
