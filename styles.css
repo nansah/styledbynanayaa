@@ -880,7 +880,7 @@ ul, ol { list-style: none; }
 /* ── LATEST IN FASHION ───────────────────────────────────────────── */
 .fashion-posts-section {
   padding: 6rem var(--gutter);
-  background: #c9a87c;
+  background: #fff;
 }
 
 .fashion-posts-section .section-header {
@@ -901,16 +901,25 @@ ul, ol { list-style: none; }
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 3.5rem;
+  gap: 4.5rem;
+  background: #fff;
+  padding: 0 0.5rem;
 }
 
 .fashion-post-card {
   display: grid;
-  grid-template-columns: 62% 1fr;
-  align-items: center;
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
   text-decoration: none;
   color: inherit;
   position: relative;
+  background: #fff;
+  box-shadow: 0 8px 32px 0 rgba(139,100,55,0.10);
+  gap: 0;
+  min-height: 340px;
+  margin: 0;
+  border-radius: 0;
+  overflow: hidden;
 }
 
 .fashion-post-img-wrap {
@@ -918,32 +927,48 @@ ul, ol { list-style: none; }
 }
 
 .fashion-post-img {
-  aspect-ratio: 4/3;
+  aspect-ratio: 1/1;
   width: 100%;
-  background: #c9a87c center/cover no-repeat;
+  height: 100%;
+  min-height: 260px;
+  background: #eaeaea center/cover no-repeat;
   display: block;
-  transition: transform 0.7s ease;
+  transition: transform 0.7s cubic-bezier(.4,0,.2,1);
 }
 
 .fashion-post-card:hover .fashion-post-img {
-  transform: scale(1.04);
+  transform: scale(1.03);
 }
 
 /* Overlapping, raised effect for card body */
 .fashion-post-body {
   background: #fff;
-  padding: 2.5rem 2.5rem 2.5rem 3rem;
-  margin-left: -7rem;
+  padding: 3.5rem 2.5rem 3.5rem 2.5rem;
+  margin: 0;
   position: relative;
   z-index: 2;
-  box-shadow: 0 8px 32px 0 rgba(139,100,55,0.18), 8px 8px 0 rgba(139,100,55,0.18);
-  border-radius: 1.2rem;
+  box-shadow: none;
+  border-radius: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 0.75rem;
-  border: 1px solid #e7d3b7;
+  align-items: flex-start;
+  justify-content: center;
+  text-align: left;
+  gap: 1.1rem;
+  border: none;
+  min-height: 260px;
+}
+/* Alternate image/text for editorial look */
+.fashion-post-card:nth-child(even) {
+  grid-template-columns: 1fr 1fr;
+}
+.fashion-post-card:nth-child(even) .fashion-post-img-wrap {
+  order: 2;
+}
+.fashion-post-card:nth-child(even) .fashion-post-body {
+  order: 1;
+  align-items: flex-end;
+  text-align: right;
 }
 
 @media (max-width: 900px) {
@@ -1017,6 +1042,26 @@ ul, ol { list-style: none; }
   max-width: var(--max-w);
   margin: 3rem auto 0;
   text-align: center;
+  background: #fff;
+}
+@media (max-width: 900px) {
+  .fashion-posts-grid {
+    gap: 2.5rem;
+  }
+  .fashion-post-card, .fashion-post-card:nth-child(even) {
+    grid-template-columns: 1fr;
+    min-height: unset;
+  }
+  .fashion-post-img {
+    min-height: 180px;
+    aspect-ratio: 16/10;
+  }
+  .fashion-post-body {
+    padding: 2rem 1.2rem 2rem 1.2rem;
+    min-height: unset;
+    align-items: flex-start !important;
+    text-align: left !important;
+  }
 }
 
 .fashion-view-all {
