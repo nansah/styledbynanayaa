@@ -884,16 +884,16 @@ ul, ol { list-style: none; }
 }
 
 .fashion-posts-section .section-header {
-  color: #fff;
+  color: #111;
 }
 
 .fashion-posts-section .section-eyebrow {
-  color: rgba(255,255,255,0.75);
-  border-bottom-color: rgba(255,255,255,0.25);
+  color: #222;
+  border-bottom-color: #e0e0e0;
 }
 
 .fashion-posts-section .section-title {
-  color: #fff;
+  color: #111;
 }
 
 .fashion-posts-grid {
