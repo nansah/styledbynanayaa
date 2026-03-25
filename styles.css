@@ -901,7 +901,7 @@ ul, ol { list-style: none; }
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 4.5rem;
+  gap: 2.5rem;
   background: #fff;
   padding: 0 0.5rem;
 }
@@ -916,7 +916,7 @@ ul, ol { list-style: none; }
   background: #fff;
   box-shadow: 0 8px 32px 0 rgba(139,100,55,0.10);
   gap: 0;
-  min-height: 340px;
+  min-height: 240px;
   margin: 0;
   border-radius: 0;
   overflow: hidden;
@@ -930,7 +930,7 @@ ul, ol { list-style: none; }
   aspect-ratio: 1/1;
   width: 100%;
   height: 100%;
-  min-height: 260px;
+  min-height: 160px;
   background: #eaeaea center/cover no-repeat;
   display: block;
   transition: transform 0.7s cubic-bezier(.4,0,.2,1);
@@ -943,7 +943,7 @@ ul, ol { list-style: none; }
 /* Overlapping, raised effect for card body */
 .fashion-post-body {
   background: #fff;
-  padding: 3.5rem 2.5rem 3.5rem 2.5rem;
+  padding: 2rem 1.5rem 2rem 1.5rem;
   margin: 0;
   position: relative;
   z-index: 2;
@@ -956,7 +956,7 @@ ul, ol { list-style: none; }
   text-align: left;
   gap: 1.1rem;
   border: none;
-  min-height: 260px;
+  min-height: 160px;
 }
 /* Alternate image/text for editorial look */
 .fashion-post-card:nth-child(even) {
