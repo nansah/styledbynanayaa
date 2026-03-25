@@ -19,7 +19,7 @@ const BlogCMS = (() => {
       category:    row.category,
       status:      row.status,
       publishedAt: row.published_at,
-      coverImage:  row.cover_image  || '',
+      coverImage:  row.cover_image ? (row.cover_image.startsWith('http') || row.cover_image.startsWith('/') ? row.cover_image : '/' + row.cover_image) : '',
       coverAlt:    row.cover_alt    || '',
       excerpt:     row.excerpt      || '',
       body:        row.body         || '',

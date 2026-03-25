@@ -131,7 +131,7 @@
           var card = document.createElement('article');
           card.className = 'post-card';
           card.innerHTML =
-            '<a href="/blog/faith/post?slug=' + encodeURIComponent(post.slug) + '" class="post-card-img" aria-label="' + post.title + '" style="' + imgStyle + '"></a>' +
+            '<div class="post-card-img-wrap"><a href="/blog/faith/post?slug=' + encodeURIComponent(post.slug) + '" class="post-card-img" aria-label="' + post.title + '" style="' + imgStyle + '"></a></div>' +
             '<div class="post-card-body">' +
               '<span class="post-card-category">' + post.category + '</span>' +
               '<h2 class="post-card-title"><a href="/blog/faith/post?slug=' + encodeURIComponent(post.slug) + '">' + post.title + '</a></h2>' +

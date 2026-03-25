@@ -55,19 +55,29 @@
 }
 
 .blog-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
   max-width: var(--max-w);
   margin: 0 auto;
 }
 
-/* ── Post Card ──────────────────────────────────────────── */
+/* ── Post Card — horizontal cocobassey style ─────────────── */
 
 .post-card {
   background: var(--white);
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  border-bottom: 1px solid rgba(196,149,90,0.12);
+  transition: background 0.2s;
+}
+
+.post-card:hover {
+  background: var(--off-white);
+}
+
+.post-card-img-wrap {
+  overflow: hidden;
 }
 
 .post-card-img {
@@ -75,18 +85,21 @@
   background-size: cover;
   background-position: center center;
   background-color: var(--cream);
-  background-image: radial-gradient(ellipse at 60% 30%, rgba(196,149,90,0.1) 0%, transparent 70%);
   display: block;
   width: 100%;
-  flex-shrink: 0;
+  transition: transform 0.65s ease;
+}
+
+.post-card:hover .post-card-img {
+  transform: scale(1.03);
 }
 
 .post-card-body {
-  padding: 1.75rem;
-  flex: 1;
+  padding: 2.5rem 3rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  justify-content: center;
+  gap: 0.6rem;
 }
 
 .post-card-category {
@@ -429,8 +442,12 @@
    ═══════════════════════════════════════════════════════════ */
 
 @media (max-width: 900px) {
-  .blog-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .post-card {
+    grid-template-columns: 280px 1fr;
+  }
+
+  .post-card-body {
+    padding: 1.75rem 2rem;
   }
 
   .related-grid {
@@ -439,8 +456,21 @@
 }
 
 @media (max-width: 600px) {
-  .blog-grid {
+  .post-card {
     grid-template-columns: 1fr;
+  }
+
+  .post-card-img {
+    aspect-ratio: 3 / 2;
+    width: 100%;
+  }
+
+  .post-card-body {
+    padding: 1.25rem;
+  }
+
+  .blog-grid {
+    grid-template-columns: 1fr; /* keep for any remaining uses */
   }
 
   .post-hero {
