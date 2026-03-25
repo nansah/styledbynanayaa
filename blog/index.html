@@ -156,10 +156,9 @@
         }
         grid.innerHTML = '';
         posts.forEach(function (post) {
-          var imgSrc = post.coverImage
-            ? (post.coverImage.startsWith('http') ? post.coverImage : '../' + post.coverImage)
-            : '';
-          var imgStyle = imgSrc ? 'background-image:url(' + imgSrc + ');' : '';
+          var fallbacks = { fashion: '../assets/img/nana_yaa_in_asos_design_cinched_waist_blazer_dress_in_buttermilk.jpg', faith: '../assets/img/jessica-mangano-eI_bxQQINRE-unsplash (1).jpg', lifestyle: '../assets/img/nanayaa_lifestyle_booksandvase.jpg' };
+          var imgSrc = post.coverImage ? (post.coverImage.startsWith('http') ? post.coverImage : '../' + post.coverImage) : (fallbacks[post.category] || '../assets/img/nana_yaa_in_asos_design_cinched_waist_blazer_dress_in_buttermilk.jpg');
+          var imgStyle = 'background-image:url(' + imgSrc + ');';
           var card = document.createElement('article');
           card.className = 'post-card';
           card.innerHTML =

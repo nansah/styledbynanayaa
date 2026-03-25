@@ -127,9 +127,7 @@
         }
         grid.innerHTML = '';
         posts.forEach(function (post) {
-          var imgStyle = post.coverImage
-            ? 'background-image:url(' + post.coverImage + ');'
-            : '';
+          var imgStyle = 'background-image:url(' + (post.coverImage || '../assets/img/nanayaa_lifestyle_booksandvase.jpg') + ');';
           var card = document.createElement('article');
           card.className = 'post-card';
           card.innerHTML =

@@ -216,7 +216,7 @@
       <span class="section-eyebrow">The Woman Behind the Edit</span>
       <h2 class="about-title">Hi, I'm<br /><em>Nana Yaa.</em></h2>
       <p class="about-bio">
-        Hi, I'm Nana Yaa — and welcome to my corner of the internet, where faith meets fashion and looking good is never at odds with living by God's word.
+        Welcome to my corner of the internet, where faith meets fashion and looking good is never at odds with living by God's word.
       </p>
       <p class="about-bio">
         This is a space for the woman who loves style, leads with her faith, and refuses to choose between the two. You'll find outfit inspiration, styling tips, modest fashion finds, and honest conversations about intentional living — all from a NYC girl and model who believes your wardrobe can honor both your aesthetic and your values.
@@ -458,8 +458,10 @@
       return new Date(iso).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
     }
 
+    var catFallbacks = { fashion: 'assets/img/nana_yaa_in_asos_design_cinched_waist_blazer_dress_in_buttermilk.jpg', faith: 'assets/img/jessica-mangano-eI_bxQQINRE-unsplash (1).jpg', lifestyle: 'assets/img/nanayaa_lifestyle_booksandvase.jpg' };
     function imgStyle(p) {
-      return p.coverImage ? 'background-image:url(' + p.coverImage + ')' : '';
+      var src = p.coverImage || catFallbacks[p.category] || 'assets/img/nana_yaa_in_asos_design_cinched_waist_blazer_dress_in_buttermilk.jpg';
+      return 'background-image:url(' + src + ')';
     }
 
     function editPost(p, featured) {

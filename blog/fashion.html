@@ -127,9 +127,7 @@
         }
         grid.innerHTML = '';
         posts.forEach(function (post) {
-          var imgStyle = post.coverImage
-            ? 'background-image:url(' + post.coverImage + ');'
-            : '';
+          var imgStyle = 'background-image:url(' + (post.coverImage || '../assets/img/nana_yaa_in_asos_design_cinched_waist_blazer_dress_in_buttermilk.jpg') + ');';
           var card = document.createElement('article');
           card.className = 'post-card';
           card.innerHTML =
