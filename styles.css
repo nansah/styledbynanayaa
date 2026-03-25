@@ -877,6 +877,103 @@ ul, ol { list-style: none; }
   z-index: 1;
 }
 
+/* ── LATEST IN FASHION ───────────────────────────────────────────── */
+.fashion-posts-section {
+  padding: 6rem var(--gutter);
+  background: var(--white);
+}
+
+.fashion-posts-grid {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.5rem;
+}
+
+.fashion-post-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.fashion-post-img {
+  aspect-ratio: 3/2;
+  overflow: hidden;
+  background: var(--cream) center/cover no-repeat;
+  margin-bottom: 1.2rem;
+  transition: transform 0.65s ease;
+}
+
+.fashion-post-card:hover .fashion-post-img {
+  transform: scale(1.03);
+}
+
+.fashion-post-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.fashion-post-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  font-weight: 400;
+  line-height: 1.35;
+  color: var(--dark);
+  margin: 0;
+}
+
+.fashion-post-excerpt {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 300;
+  color: var(--mid);
+  line-height: 1.6;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.fashion-posts-footer {
+  max-width: var(--max-w);
+  margin: 2.5rem auto 0;
+  text-align: right;
+}
+
+.fashion-view-all {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(196,149,90,0.4);
+  padding-bottom: 2px;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.fashion-view-all:hover {
+  color: var(--dark);
+  border-color: var(--dark);
+}
+
+@media (max-width: 900px) {
+  .fashion-posts-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .fashion-posts-grid {
+    grid-template-columns: 1fr;
+  }
+  .fashion-posts-footer { text-align: center; }
+}
+
 /* ── FULL BLEED QUOTE — LIGHT (warm cream, not dark) ─────────────── */
 .full-quote {
   position: relative;

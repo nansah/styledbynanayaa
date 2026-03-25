@@ -170,6 +170,23 @@
   <!-- ── EDITORIAL RULE ──────────────────────────────────────────────── -->
   <div class="editorial-rule" aria-hidden="true"></div>
 
+  <!-- ── LATEST IN FASHION ────────────────────────────────────────────── -->
+  <section class="fashion-posts-section" id="fashion-posts">
+    <div class="section-header">
+      <span class="section-eyebrow">The Style Files</span>
+      <h2 class="section-title">Latest in Fashion</h2>
+    </div>
+    <div class="fashion-posts-grid" id="fashion-posts-grid">
+      <!-- Populated by JS -->
+    </div>
+    <div class="fashion-posts-footer">
+      <a href="/blog/fashion" class="fashion-view-all">View All Fashion Posts →</a>
+    </div>
+  </section>
+
+  <!-- ── EDITORIAL RULE ──────────────────────────────────────────────── -->
+  <div class="editorial-rule" aria-hidden="true"></div>
+
   <!-- ── QUOTE BREAK ─────────────────────────────────────────────────── -->
   <section class="full-quote">
     <div class="quote-inner">
@@ -199,12 +216,11 @@
       <span class="section-eyebrow">The Woman Behind the Edit</span>
       <h2 class="about-title">Hi, I'm<br /><em>Nana Yaa.</em></h2>
       <p class="about-bio">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+        Hi, I'm Nana Yaa — and welcome to my corner of the internet, where faith meets fashion and looking good is never at odds with living by God's word.
       </p>
       <p class="about-bio">
-        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.
+        This is a space for the woman who loves style, leads with her faith, and refuses to choose between the two. You'll find outfit inspiration, styling tips, modest fashion finds, and honest conversations about intentional living — all from a NYC girl and model who believes your wardrobe can honor both your aesthetic and your values.
       </p>
-      <p class="about-bio">Welcome to my world.</p>
       <div class="about-signature">Nana Yaa Ansah</div>
       <a href="/about" class="btn-primary">Read My Story</a>
     </div>
@@ -473,6 +489,34 @@
     } catch (e) { /* fail silently */ }
   })();
   </script>
+
+  <script>
+  /* ── Latest in Fashion ─────────────────────────────────────────── */
+  (async function() {
+    var grid = document.getElementById('fashion-posts-grid');
+    if (!grid) return;
+    try {
+      var posts = await BlogCMS.getPublished('fashion');
+      if (!posts || !posts.length) return;
+      grid.innerHTML = posts.slice(0, 3).map(function(p) {
+        var url = '/blog/fashion/post?slug=' + encodeURIComponent(p.slug);
+        var imgStyle = p.coverImage
+          ? 'background-image:url(' + p.coverImage + ');'
+          : 'background-image:url(assets/img/nana_yaa_in_asos_design_cinched_waist_blazer_dress_in_buttermilk.jpg);';
+        return '<a class="fashion-post-card" href="' + url + '">' +
+          '<div class="fashion-post-img" style="' + imgStyle + '"></div>' +
+          '<div class="fashion-post-body">' +
+            '<span class="edit-post-cat">Fashion</span>' +
+            '<h3 class="fashion-post-title">' + p.title + '</h3>' +
+            '<p class="fashion-post-excerpt">' + (p.excerpt || '') + '</p>' +
+            '<span class="edit-post-more">Read More</span>' +
+          '</div>' +
+        '</a>';
+      }).join('');
+    } catch(e) { /* fail silently */ }
+  })();
+  </script>
+
   <script src="instagram.js"></script>
 </body>
 </html>
