@@ -2073,6 +2073,13 @@ cite {
   margin-top: 0.5rem;
 }
 
+/* Strip section-eyebrow divider when used inside content (not a section header) */
+.home-worksheet-text .section-eyebrow {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0.6rem;
+}
+
 @media (max-width: 900px) {
   .home-worksheet-inner {
     grid-template-columns: 1fr;
@@ -2446,6 +2453,33 @@ cite {
 }
 
 /* ── RESOURCES PAGE ──────────────────────────────────────────────── */
+
+/* resources-card-eyebrow has its own class; ensure no inherited divider */
+.resources-card-eyebrow {
+  border-bottom: none !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 0.5rem;
+}
+
+.resources-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.resources-row-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  justify-content: center;
+}
+
+.resources-services-header .resources-card-title,
+.resources-row-text .resources-card-title,
+.resources-card-body .resources-card-title {
+  margin-bottom: 1rem;
+}
+
 .resources-section {
   padding: 6rem var(--gutter);
   background: var(--white);
