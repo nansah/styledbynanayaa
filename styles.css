@@ -880,16 +880,7 @@ ul, ol { list-style: none; }
 /* ── LATEST IN FASHION ───────────────────────────────────────────── */
 .fashion-posts-section {
   padding: 6rem var(--gutter);
-  background: #c9a87c;
-}
-
-.fashion-posts-section .section-eyebrow {
-  color: rgba(255,255,255,0.75);
-  border-bottom-color: rgba(255,255,255,0.25);
-}
-
-.fashion-posts-section .section-title {
-  color: #fff;
+  background: var(--white);
 }
 
 .fashion-posts-grid {
@@ -897,7 +888,7 @@ ul, ol { list-style: none; }
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 4rem;
+  gap: 6rem;
 }
 
 /* Card: image fills the block, text card floats above it */
@@ -910,13 +901,13 @@ ul, ol { list-style: none; }
 
 .fashion-post-img-wrap {
   overflow: hidden;
-  width: 70%;
+  width: 60%;
 }
 
 .fashion-post-img {
   aspect-ratio: 4/3;
   width: 100%;
-  background: #c9a87c center/cover no-repeat;
+  background: var(--cream) center/cover no-repeat;
   display: block;
   transition: transform 0.7s ease;
 }
@@ -931,16 +922,27 @@ ul, ol { list-style: none; }
   top: 50%;
   right: 0;
   transform: translateY(-50%);
-  width: 42%;
+  width: 46%;
   background: #fff;
   padding: 2.75rem 2.5rem;
-  box-shadow: 8px 8px 0 rgba(139,100,55,0.30);
+  border: 1px solid rgba(196,149,90,0.35);
+  box-shadow: 6px 6px 0 rgba(196,149,90,0.18);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   gap: 0.8rem;
   z-index: 2;
+}
+
+/* Even cards: image on right, text card on left */
+.fashion-post-card:nth-child(even) .fashion-post-img-wrap {
+  margin-left: auto;
+}
+
+.fashion-post-card:nth-child(even) .fashion-post-body {
+  right: auto;
+  left: 0;
 }
 
 .fashion-post-cat-label {
@@ -1016,18 +1018,20 @@ ul, ol { list-style: none; }
 .fashion-view-all:hover { opacity: 0.7; }
 
 @media (max-width: 900px) {
-  .fashion-post-img-wrap { width: 100%; }
+  .fashion-posts-grid { gap: 4rem; }
+  .fashion-post-img-wrap { width: 100%; margin-left: 0 !important; }
   .fashion-post-body {
     position: relative;
-    top: auto; right: auto;
+    top: auto; right: auto; left: auto;
     transform: none;
     width: calc(100% - 3rem);
     margin: -3rem auto 0;
-    box-shadow: 6px 6px 0 rgba(139,100,55,0.28);
+    box-shadow: 4px 4px 0 rgba(196,149,90,0.22);
   }
 }
 
 @media (max-width: 600px) {
+  .fashion-posts-grid { gap: 3rem; }
   .fashion-post-body {
     width: calc(100% - 2rem);
     padding: 1.75rem 1.5rem;
