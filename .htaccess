@@ -1,4 +1,4 @@
-Options -Indexes
+Options -Indexes +FollowSymLinks
 RewriteEngine On
 RewriteBase /
 
@@ -12,20 +12,22 @@ RewriteRule ^blog-post(\.html)?$    /blog/post    [R=301,L,NE]
 RewriteCond %{THE_REQUEST} \s/+(.+?)\.html[\s?] [NC]
 RewriteRule ^ /%1 [R=301,L,NE]
 
+# ── Blog post sub-paths → blog/post.html ─────────────────────────
+RewriteRule ^blog/fashion/post/?$ /blog/post.html [L,QSA]
+RewriteRule ^blog/faith/post/?$   /blog/post.html [L,QSA]
+RewriteRule ^blog/lifestyle/post/?$ /blog/post.html [L,QSA]
+
+# ── Blog category clean URLs ──────────────────────────────────────
+RewriteRule ^blog/fashion/?$   /blog/fashion.html   [L]
+RewriteRule ^blog/faith/?$     /blog/faith.html     [L]
+RewriteRule ^blog/lifestyle/?$ /blog/lifestyle.html [L]
+RewriteRule ^blog/?$           /blog/index.html     [L]
+
 # ── Serve root .html files for clean URLs ────────────────────────
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME}.html -f
 RewriteRule ^([^/]+)/?$ $1.html [L]
-
-# ── Blog post sub-paths → blog/post.html (rewrite, not redirect) ──
-RewriteRule ^blog/(fashion|faith|lifestyle)/post/?$ /blog/post.html [L,QSA]
-
-# ── Serve blog/ subfolder .html files for clean URLs ─────────────
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME}.html -f
-RewriteRule ^(blog/[^/]+)/?$ $1.html [L]
 
 # ── Security headers ──────────────────────────────────────────────
 <IfModule mod_headers.c>
