@@ -182,15 +182,8 @@
 
   <script src="config.js"></script>
   <script src="main.js"></script>
-  <script>
-  document.getElementById('resources-worksheet-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    var btn = this.querySelector('button');
-    btn.textContent = 'Thank you! Check your inbox.';
-    btn.disabled = true;
-    this.querySelector('input').disabled = true;
-  });
-  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="worksheet.js"></script>
 
 </body>
 </html>
