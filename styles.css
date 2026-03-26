@@ -2316,7 +2316,7 @@ cite {
 /* ── HOME SHOP SECTION ───────────────────────────────────────────── */
 .home-shop-section {
   padding: 6rem var(--gutter);
-  background: var(--cream);
+  background: var(--white);
   position: relative;
   overflow: hidden;
 }
