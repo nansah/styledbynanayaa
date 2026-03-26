@@ -23,7 +23,7 @@
 var EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';   // e.g. 'abc123XYZ'
 var EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';   // e.g. 'service_xxxxxx'
 var EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';  // e.g. 'template_xxxxxx'
-var PDF_URL = 'https://styledbynanayaa.com/assets/downloads/wardrobe-audit-worksheet.pdf';
+var PDF_URL = window.location.origin + '/assets/downloads/wardrobe-audit-worksheet.pdf';
 
 (function () {
   emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
