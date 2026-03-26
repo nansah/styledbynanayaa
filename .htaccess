@@ -18,6 +18,9 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME}.html -f
 RewriteRule ^([^/]+)/?$ $1.html [L]
 
+# ── Blog post sub-paths → blog/post.html (rewrite, not redirect) ──
+RewriteRule ^blog/(fashion|faith|lifestyle)/post/?$ /blog/post.html [L,QSA]
+
 # ── Serve blog/ subfolder .html files for clean URLs ─────────────
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
