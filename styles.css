@@ -1907,7 +1907,8 @@ cite {
 /* ── HOME WORKSHEET SECTION ─────────────────────────────────────── */
 .home-worksheet-section {
   background: var(--cream);
-  padding: 7rem var(--gutter);
+  padding: 9rem var(--gutter);
+  border-bottom: 1px solid rgba(196,149,90,0.2);
 }
 
 .home-worksheet-inner {
