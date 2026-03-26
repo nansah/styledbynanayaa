@@ -12,6 +12,9 @@ RewriteRule ^blog-post(\.html)?$    /blog/post    [R=301,L,NE]
 RewriteCond %{THE_REQUEST} \s/+(.+?)\.html[\s?] [NC]
 RewriteRule ^ /%1 [R=301,L,NE]
 
+# ── Resources clean URL ──────────────────────────────────────────
+RewriteRule ^resources/?$ /resources.html [L]
+
 # ── Blog post sub-paths → blog/post.html ─────────────────────────
 RewriteRule ^blog/fashion/post/?$ /blog/post.html [L,QSA]
 RewriteRule ^blog/faith/post/?$   /blog/post.html [L,QSA]

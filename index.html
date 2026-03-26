@@ -28,7 +28,7 @@
       <div class="nav-right">
         <a href="/shop" class="nav-link">My Faves</a>
         <a href="/blog" class="nav-link">Blog</a>
-        <a href="/ebook" class="nav-link">Ebook</a>
+        <a href="/resources" class="nav-link">Resources</a>
         <a href="/press" class="nav-link">Press</a>
         <a href="/about" class="nav-link">About</a>
       </div>
@@ -42,7 +42,7 @@
       <a href="/blog/lifestyle" class="mobile-link">Lifestyle</a>
       <a href="/shop" class="mobile-link">My Faves</a>
       <a href="/blog" class="mobile-link">Blog</a>
-      <a href="/ebook" class="mobile-link">Ebook</a>
+      <a href="/resources" class="mobile-link">Resources</a>
       <a href="/press" class="mobile-link">Press</a>
       <a href="/about" class="mobile-link">About</a>
     </div>
@@ -230,59 +230,55 @@
   <!-- ── EDITORIAL RULE ──────────────────────────────────────────────── -->
   <div class="editorial-rule" aria-hidden="true"></div>
 
-  <!-- ── EBOOK PROMO ─────────────────────────────────────────────────── -->
-  <section class="home-ebook-section">
-    <div class="home-ebook-bg-deco" aria-hidden="true"></div>
-    <div class="home-ebook-inner">
-      <span class="section-eyebrow home-ebook-eyebrow">New Release · 2026</span>
-      <h2 class="home-ebook-title">How to Create A Personal Style<br /><em>You Love</em></h2>
-      <p class="home-ebook-desc">120+ pages of honest, actionable guidance — written from experience, filtered through faith, styled for the woman ready to show up fully.</p>
-
-      <div class="home-ebook-stage">
-        <!-- 3D Book -->
-        <div class="home-ebook-cover" aria-hidden="true">
-          <div class="home-ebook-book">
-            <img src="assets/img/pexels-cottonbro-9836579.jpg" alt="Ebook cover" class="home-ebook-book-photo" />
-            <div class="home-ebook-book-overlay"></div>
-            <div class="home-ebook-book-content">
-              <span class="home-book-eyebrow">Nana Yaa Ansah</span>
-              <div class="home-book-deco-line"></div>
-              <span class="home-book-title">How to Create A Personal Style <em>You Love</em></span>
-              <span class="home-book-ed">2026 Edition</span>
-            </div>
+  <!-- ── WARDROBE AUDIT WORKSHEET ────────────────────────────────────── -->
+  <section class="home-worksheet-section">
+    <div class="home-worksheet-inner">
+      <div class="home-worksheet-text">
+        <span class="section-eyebrow">Free Download</span>
+        <h2 class="home-worksheet-title">The Wardrobe Audit<br /><em>Worksheet</em></h2>
+        <p class="home-worksheet-desc">Not sure where to start with your closet? This free worksheet walks you through exactly how to audit what you own, identify what's missing, and build a wardrobe that actually works for your life and faith.</p>
+        <ul class="home-worksheet-list">
+          <li>Closet inventory checklist</li>
+          <li>Style values + faith alignment prompts</li>
+          <li>Gap analysis for a functional wardrobe</li>
+          <li>Capsule wardrobe starter guide</li>
+        </ul>
+        <form class="home-worksheet-form" id="worksheet-form">
+          <input type="email" class="home-worksheet-email" placeholder="Your email address" required />
+          <button type="submit" class="btn-primary">Send Me the Worksheet</button>
+        </form>
+        <p class="home-worksheet-note">Free. No spam. Unsubscribe anytime.</p>
+      </div>
+      <div class="home-worksheet-visual" aria-hidden="true">
+        <div class="worksheet-mockup">
+          <div class="worksheet-mockup-header">
+            <span>Nana Yaa Ansah</span>
+            <div class="worksheet-mockup-line"></div>
           </div>
-          <div class="home-ebook-spine"></div>
-          <div class="home-ebook-shadow"></div>
-        </div>
-        <!-- Stats beside book -->
-        <div class="home-ebook-stats">
-          <div class="home-ebook-stat">
-            <span class="stat-num">120<small>+</small></span>
-            <span class="stat-label">Pages</span>
+          <div class="worksheet-mockup-title">Wardrobe Audit<br>Worksheet</div>
+          <div class="worksheet-mockup-rows">
+            <div class="worksheet-mockup-row"></div>
+            <div class="worksheet-mockup-row"></div>
+            <div class="worksheet-mockup-row short"></div>
+            <div class="worksheet-mockup-row"></div>
+            <div class="worksheet-mockup-row short"></div>
+            <div class="worksheet-mockup-row"></div>
           </div>
-          <div class="home-ebook-stat">
-            <span class="stat-num">7</span>
-            <span class="stat-label">Chapters</span>
-          </div>
-          <div class="home-ebook-stat">
-            <span class="stat-num">PDF<small>+</small>ePub</span>
-            <span class="stat-label">Formats</span>
-          </div>
+          <div class="worksheet-mockup-check">✦ Style. Faith. Intention.</div>
         </div>
       </div>
-
-      <div class="home-ebook-price">
-        <span class="home-price-was">$34.99</span>
-        <span class="home-price-now">$19.99</span>
-        <span class="home-price-save">You save $15</span>
-      </div>
-      <div class="home-ebook-ctas">
-        <a href="/ebook" class="btn-primary">Get the eBook — $19.99</a>
-        <a href="/ebook#preview" class="btn-outline home-ebook-outline">Read a Preview</a>
-      </div>
-      <p class="home-ebook-note">Instant digital download · No refunds on digital products</p>
     </div>
   </section>
+
+  <script>
+  document.getElementById('worksheet-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var btn = this.querySelector('button');
+    btn.textContent = 'Thank you! Check your inbox.';
+    btn.disabled = true;
+    this.querySelector('input').disabled = true;
+  });
+  </script>
 
   <!-- ── EDITORIAL RULE ──────────────────────────────────────────────── -->
   <div class="editorial-rule" aria-hidden="true"></div>
